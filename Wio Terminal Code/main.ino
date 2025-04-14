@@ -7,11 +7,14 @@ const char *password = "gzjx4245"; // your network password
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
-const char *subTopic1 = "getStatus";  // Topic to subcribe to
+const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
+const char *subTopic2 = "Status/getStatus";
 const char *server = "test.mosquitto.org"; // Server URL
+bool previousStatus = true;
 bool armed;
 String receivedMessage = ""; // Global string to store the message
 unsigned long start;
+
 
 
 WiFiClient wifiClient;
@@ -49,7 +52,7 @@ void reconnect() {
     if (client.connect(ID)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(TOPIC, "{\"message\": \"Wio Terminal is connected!\"}");
+      client.publish(subTopic2, "{\"message\": \"Wio Terminal is connected!\"}");
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
@@ -95,6 +98,18 @@ void setup()
   client.setCallback(callback);
 }
 
+void updateStatus()
+{
+  if (previousStatus != armed)
+  {
+    if (armed == true){
+      client.publish(subTopic2, "armed");
+    } else {
+      client.publish(subTopic2, "disarmed");
+    }
+    previousStatus = armed;
+  }
+}
 
 
 void loop()
@@ -103,5 +118,8 @@ void loop()
     reconnect();
   }  
   client.loop();
-  if (armed == false)return;
+  updateStatus();
+  if (armed == false){
+    return;
+  }
 }
