@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Security - Arm/Disarm</title>
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="icon" type="image/x-icon" href="../img/icon.svg">
+  <script src="../javascript/toggleAlarm.js"></script> 
+</head>
+
+<body>
+  <div class="card text-center" id="mainCard">
+    <h3 class="mb-4" id="systemTitle">Home Security System</h3>
+    <p class="status-indicator text-success" id="systemStatus">Status: Disarmed</p>
+    <div class="d-grid gap-2 mt-4" id="controlButtons">
+      <button class="btn btn-success" id="armButton" onclick="toggleAlarm()">Arm</button>
+    </div>
+  </div>
+</body>
+</html>
