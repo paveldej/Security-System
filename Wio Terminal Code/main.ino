@@ -103,9 +103,9 @@ void updateStatus()
   if (previousStatus != armed)
   {
     if (armed == true){
-      client.publish(subTopic2, "armed");
+      client.publish(subTopic2, "arm");
     } else {
-      client.publish(subTopic2, "disarmed");
+      client.publish(subTopic2, "disarm");
     }
     previousStatus = armed;
   }
