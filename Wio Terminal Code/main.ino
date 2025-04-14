@@ -103,5 +103,5 @@ void loop()
     reconnect();
   }  
   client.loop();
-  if (armed = false)return;
+  if (armed == false)return;
 }
