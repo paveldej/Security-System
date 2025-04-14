@@ -4,8 +4,10 @@ const client = mqtt.connect('mqtt://test.mosquitto.org');
 const button = document.getElementById('armButton');
 let s = "arm";
 client.on('message', function (topic, message) {
+    if (topic == "getStatus"){
     console.log('Received message:', message.toString());
     s = message.toString();
+    }
 });
 
 // When connected
@@ -30,9 +32,4 @@ client.on('connect', () => {
       console.error('Subscription error:', err);
     }
   });
-});
-
-// Handle incoming messages
-client.on('message', (topic, message) => {
-  console.log(`📨 Message received on [${topic}]: ${message.toString()}`);
 });
