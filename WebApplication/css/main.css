@@ -56,3 +56,18 @@ body {
 .alert-container.show {
   top: 20px;
 }
+
+.status-light {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: transparent;
+  margin: 0 auto;
+  box-shadow: 0 0 0 2px #ccc;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.status-light.armed {
+  background-color: #28a745; /* Bootstrap green */
+  box-shadow: 0 0 8px #28a745;
+}
