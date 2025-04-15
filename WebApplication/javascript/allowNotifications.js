@@ -4,9 +4,8 @@
     let permission = await Notification.requestPermission();
     
     if (permission === 'granted') {
-      batteryNotification();
+      // batteryNotification();
     }
   }
 
 allowNotifications();
-batteryNotification();

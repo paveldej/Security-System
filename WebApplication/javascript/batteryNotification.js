@@ -1,8 +1,36 @@
+const alert = document.getElementById("batteryAlert");
+
 function batteryNotification() {
-  const alert = document.getElementById("batteryAlert");
   alert.classList.add("show");
 }
 
 function dismissBatteryAlert() {
-  document.getElementById("batteryAlert").classList.remove("show");
+  alert.classList.remove("show");
 }
+
+const client = mqtt.connect('wss://test.mosquitto.org:8081');
+
+client.on('connect', () => {
+  console.log('Connected to MQTT broker');
+
+  client.subscribe('wioTerminal/battery', (err) => {
+    if (!err) {
+      console.log('Subscribed to wioTerminal/battery');
+    }
+  });
+});
+
+client.on('message', function (topic, message) {
+  if (topic === 'wioTerminal/battery') {
+    const batteryLevel = parseInt(message.toString());
+    console.log("Battery Level:", batteryLevel);
+
+    if (batteryLevel < 20) {
+      batteryNotification();
+    }
+  }
+});
+
+setInterval(() => {
+  client.publish('wioTerminal/battery/request', '1');
+}, 10000);
