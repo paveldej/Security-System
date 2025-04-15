@@ -2,16 +2,15 @@
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.
-const char *ssid = "Galaxy Note20 Ultra 5Gb10f";      // your network SSID
-const char *password = "gzjx4245"; // your network password
+const char *ssid = "forza juve";      // your network SSID
+const char *password = "filqwerty"; // your network password
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
 const char *server = "test.mosquitto.org"; // Server URL
-bool previousStatus = true;
-bool armed;
+bool armed = "true";
 String receivedMessage = ""; // Global string to store the message
 unsigned long start;
 
@@ -40,8 +39,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Optionally, you can perform other actions based on the message
   // For example:
-   if (receivedMessage == "arm") { armed = true; }
-   if (receivedMessage == "disarm") { armed = false; }
+   if (receivedMessage == "arm") { armed = true; updateStatus();}
+   else if (receivedMessage == "disarm") { armed = false; updateStatus();}
+   else if(receivedMessage == "status"){
+      updateStatus();
+   }
 }
 void reconnect() {
   // Loop until we're reconnected
@@ -100,14 +102,12 @@ void setup()
 
 void updateStatus()
 {
-  if (previousStatus != armed)
   {
     if (armed == true){
       client.publish(subTopic2, "arm");
     } else {
       client.publish(subTopic2, "disarm");
     }
-    previousStatus = armed;
   }
 }
 
@@ -118,7 +118,6 @@ void loop()
     reconnect();
   }  
   client.loop();
-  updateStatus();
   if (armed == false){
     return;
   }
