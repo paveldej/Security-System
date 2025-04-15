@@ -1,5 +1,6 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
+#include <SparkFunBQ27441.h>
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -9,6 +10,7 @@ const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
+const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
 bool armed = "true";
 String receivedMessage = ""; // Global string to store the message
@@ -19,6 +21,26 @@ unsigned long start;
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
+const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
+
+void setupBattery(void)
+{
+  // Use lipo.begin() to initialize the BQ27441-G1A and confirm that it's
+  // connected and communicating.
+  if (!lipo.begin()) // begin() will return true if communication is successful
+  {
+  // If communication fails, print an error message and loop forever.
+    Serial.println("Error: Unable to communicate with BQ27441.");
+    Serial.println("  Check wiring and try again.");
+    Serial.println("  (Battery must be plugged into Battery Babysitter!)");
+    while (1) ;
+  }
+  Serial.println("Connected to BQ27441!");
+  
+  // Uset lipo.setCapacity(BATTERY_CAPACITY) to set the design capacity
+  // of your battery.
+  lipo.setCapacity(BATTERY_CAPACITY);
+}
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -75,6 +97,7 @@ void setup()
 {
   armed = true;
   Serial.begin(115200);
+  setupBattery();
   start = millis();
   while (!Serial && millis() - start < 5000) 
     ; // Wait for Serial to be ready or time out after 5 seconds, 
@@ -111,6 +134,15 @@ void updateStatus()
   }
 }
 
+void updateBattery () {
+  byte soc = lipo.soc();
+  if (soc < 20) {
+    char buffer[4];
+    itoa(soc, buffer, 10);
+    client.publish(pubBatteryLevel, buffer);
+  }
+}
+
 
 void loop()
 {
@@ -118,6 +150,9 @@ void loop()
     reconnect();
   }  
   client.loop();
+  
+  updateBattery();
+
   if (armed == false){
     return;
   }
