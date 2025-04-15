@@ -1,5 +1,8 @@
 function batteryNotification() {
-  new Notification("Security System", {
-    body: "Security system battery low!"
-  });
+  const alert = document.getElementById("batteryAlert");
+  alert.classList.add("show");
+}
+
+function dismissBatteryAlert() {
+  document.getElementById("batteryAlert").classList.remove("show");
 }
