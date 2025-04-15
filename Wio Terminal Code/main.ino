@@ -3,14 +3,15 @@
 #include <SparkFunBQ27441.h>
 
 // Update these with values suitable for your network.
-const char *ssid = "forza juve";      // your network SSID
-const char *password = "filqwerty"; // your network password
+const char *ssid = "Tele2_997726";      // your network SSID
+const char *password = "6fh7j5vf"; // your network password
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
+const char *subBatteryLevelRequest = "wioTerminal/battery/request";
 const char *server = "test.mosquitto.org"; // Server URL
 bool armed = "true";
 String receivedMessage = ""; // Global string to store the message
@@ -55,9 +56,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i = 0; i < length; i++) {
     receivedMessage += (char)payload[i];  // Append each character to the string
   }
-  
+
   // Print the received message
   Serial.println(receivedMessage);
+  
+  if(String(topic) == String(subBatteryLevelRequest)) {
+    updateBattery();
+    return;
+  }
 
   // Optionally, you can perform other actions based on the message
   // For example:
@@ -67,6 +73,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
       updateStatus();
    }
 }
+
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected())
@@ -80,8 +87,11 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
+      client.subscribe(subBatteryLevelRequest);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      Serial.print("Subcribed to: ");
+      Serial.println(subBatteryLevelRequest);
     }
     else {
       Serial.print("failed, rc=");
@@ -123,6 +133,7 @@ void setup()
   client.setCallback(callback);
 }
 
+//send battery status via mqtt
 void updateStatus()
 {
   {
@@ -134,13 +145,14 @@ void updateStatus()
   }
 }
 
+// send battery status via mqtt
 void updateBattery () {
-  byte soc = lipo.soc();
-  if (soc < 20) {
-    char buffer[4];
-    itoa(soc, buffer, 10);
-    client.publish(pubBatteryLevel, buffer);
-  }
+  byte soc = lipo.soc(); // read battery percentage
+  Serial.print("sending battery info: ");
+  Serial.println(soc);
+  char buffer[4];
+  itoa(soc, buffer, 10);
+  client.publish(pubBatteryLevel, buffer);
 }
 
 
@@ -151,8 +163,6 @@ void loop()
   }  
   client.loop();
   
-  updateBattery();
-
   if (armed == false){
     return;
   }
