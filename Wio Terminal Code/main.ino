@@ -1,54 +1,130 @@
-//implementation of the Alarm Trigger library
-
+#include "rpcWiFi.h"
+#include <PubSubClient.h>
 #include "AlarmTrigger.h"
-#include <ChainableLED.h>
-#include "Ultrasonic.h"
 
-//hard-coded ports for now, might change it later
-ChainableLED leds(2, 3, 1);
-Ultrasonic ultrasonicSensor(D0);
+// Update these with values suitable for your network.
+const char *ssid = "forza juve";      // your network SSID
+const char *password = "filqwerty"; // your network password
 
-void AlarmTrigger::turnLightRed()
-{
-  leds.setColorRGB(0, 50, 0, 0);
+const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
+const char *TOPIC = "Status";  // Topic to subcribe to
+const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
+const char *subTopic2 = "Status/getStatus";
+const char *server = "test.mosquitto.org"; // Server URL
+bool armed = "true";
+String receivedMessage = ""; // Global string to store the message
+unsigned long start;
+
+
+
+WiFiClient wifiClient;
+PubSubClient client(wifiClient);
+
+AlarmTrigger alarmTrigger;
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  
+  // Clear the previous message
+  receivedMessage = "";
+
+  // Store the message in the 'receivedMessage' string
+  for (int i = 0; i < length; i++) {
+    receivedMessage += (char)payload[i];  // Append each character to the string
+  }
+  
+  // Print the received message
+  Serial.println(receivedMessage);
+
+  // Optionally, you can perform other actions based on the message
+  // For example:
+   if (receivedMessage == "arm") { armed = true; updateStatus();}
+   else if (receivedMessage == "disarm") { armed = false; updateStatus();}
+   else if(receivedMessage == "status"){
+      updateStatus();
+   }
 }
-
-void AlarmTrigger::turnLightGreen()
-{
-  leds.setColorRGB(0, 0, 50, 0);
-}
-
-//utilzes both the in-built and connected (port:D04) buzzers
-void AlarmTrigger::playAlarmSound()
-{
-  pinMode(WIO_BUZZER, OUTPUT);
-  analogWrite(WIO_BUZZER, 64);
-  digitalWrite(4, HIGH);
-}
-
-void AlarmTrigger::stopAlarmSound(){
-  analogWrite(WIO_BUZZER, 0);
-  digitalWrite(4, LOW);
-}
-
-bool AlarmTrigger::objectIsClose(long threshold)
-{
-  long distance = ultrasonicSensor.MeasureInCentimeters();
-  if (distance <= threshold){
-    return true;
-  } else {
-    return false;
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected())
+  {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (client.connect(ID)) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish(subTopic2, "{\"message\": \"Wio Terminal is connected!\"}");
+      Serial.println("Published connection message successfully!");
+      // ... and resubscribe
+      client.subscribe(subTopic1);
+      Serial.print("Subcribed to: ");
+      Serial.println(subTopic1);
+    }
+    else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
   }
 }
 
-//the seconds denote how long should the alarm be triggered
-void AlarmTrigger::triggerAlarm(int seconds){
+void setup()
+{
+  armed = true;
+  Serial.begin(115200);
+  start = millis();
+  while (!Serial && millis() - start < 5000) 
+    ; // Wait for Serial to be ready or time out after 5 seconds, 
+      //this is essentail, because if the device is not connected (running off the battery), it will wait forever
+  Serial.print("Attempting to connect to SSID: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
 
-  alarmTrigger.playAlarmSound();
-  alarmTrigger.turnLightRed();
+  // attempt to connect to Wifi network:
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    WiFi.begin(ssid, password);
+    // wait 1 second for re-trying
+    delay(1000);
+  }
   
-  delay(seconds*1000);
-  
-  alarmTrigger.turnLightGreen();
-  alarmTrigger.stopAlarmSound();
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  delay(500);
+
+  client.setServer(server, 1883);
+  client.setCallback(callback);
+}
+
+void updateStatus()
+{
+  {
+    if (armed == true){
+      client.publish(subTopic2, "arm");
+    } else {
+      client.publish(subTopic2, "disarm");
+    }
+  }
+}
+
+
+void loop()
+{
+  if (!client.connected()) {
+    reconnect();
+  }  
+  client.loop();
+  if (armed == false){
+    return;
+  }
+  //we trigger it when its less than or equal to 40 cms and it triggers for 4 seconds
+  if (alarmTrigger.objectIsClose(40)){
+    alarmTrigger.triggerAlarm(4);
+  }
+  delay(500);
 }
