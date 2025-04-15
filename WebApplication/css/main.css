@@ -18,3 +18,41 @@ body {
     font-weight: bold;
   }
  
+/* Alert Styling */
+.alert-container {
+  width: 100%;
+  position: fixed;
+  top: -100px;
+  left: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  transition: top 0.6s ease-in-out;
+}
+
+.custom-alert {
+  max-width: 90%;
+  width: 500px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  background-color: #ffe1e1;
+  color: #900;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.dismiss-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #900;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+.alert-container.show {
+  top: 20px;
+}

@@ -7,3 +7,6 @@
       batteryNotification();
     }
   }
+
+allowNotifications();
+batteryNotification();
