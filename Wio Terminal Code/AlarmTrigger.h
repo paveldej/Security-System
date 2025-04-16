@@ -8,5 +8,6 @@ class AlarmTrigger{
     void stopAlarmSound();
     bool objectIsClose(long threshold);
     void triggerAlarm(int seconds);
+    void blinkRed(float milliseconds);
 };
 #endif
