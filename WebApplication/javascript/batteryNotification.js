@@ -1,4 +1,7 @@
+import { sendMessage } from './sendmail.js';
+const sendEmailMessage = sendMessage;
 const alert = document.getElementById("batteryAlert");
+let batterylevelemail = false;
 
 function batteryNotification() {
   alert.classList.add("show");
@@ -23,8 +26,19 @@ client.on('message', function (topic, message) {
     const batteryLevel = parseInt(message.toString());
     console.log("Battery Level:", batteryLevel);
 
-    if (batteryLevel < 20) {
+    if (batteryLevel < 100) {
       batteryNotification();
+      if (batterylevelemail == false){
+      sendEmailMessage({
+        to: 'filqwerty987@gmail.com',
+        subject: 'Low battery level',
+        text: 'Your battery level is below 20%!',
+      });
+      batterylevelemail = true;
+      }
+    }
+    else {
+      emailsended = false;
     }
   }
 });
