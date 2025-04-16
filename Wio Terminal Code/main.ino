@@ -1,5 +1,6 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
+#include "AlarmTrigger.h"
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -19,7 +20,7 @@ unsigned long start;
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
-
+AlarmTrigger alarmTrigger;
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -121,4 +122,9 @@ void loop()
   if (armed == false){
     return;
   }
+  //we trigger it when its less than or equal to 40 cms and it triggers for 4 seconds
+  if (alarmTrigger.objectIsClose(40)){
+    alarmTrigger.triggerAlarm(4);
+  }
+  delay(500);
 }
