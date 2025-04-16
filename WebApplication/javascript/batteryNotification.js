@@ -8,8 +8,6 @@ function dismissBatteryAlert() {
   alert.classList.remove("show");
 }
 
-const client = mqtt.connect('wss://test.mosquitto.org:8081');
-
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
 
