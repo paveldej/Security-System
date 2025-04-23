@@ -53,7 +53,7 @@ client.on('message', async (topic, message) => {
     const batteryLevel = parseInt(message.toString());
     console.log("🔋 Battery Level:", batteryLevel);
 
-    if (batteryLevel < 20) {
+    if (batteryLevel < 100) {
       if (!isEmailSent) {
         await sendEmail(
           "filqwerty987@gmail.com",
