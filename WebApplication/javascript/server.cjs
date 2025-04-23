@@ -45,15 +45,16 @@ client.on('connect', () => {
   console.log('Connected to MQTT broker');
   client.subscribe('Status/getStatus');
   client.subscribe('wioTerminal/battery');
+  client.subscribe("Status/sendEmail")
   client.publish('Status/setStatus', 'status');
 });
 
 client.on('message', async (topic, message) => {
   if (topic === 'wioTerminal/battery') {
     const batteryLevel = parseInt(message.toString());
-    console.log("🔋 Battery Level:", batteryLevel);
+    console.log("Battery Level:", batteryLevel);
 
-    if (batteryLevel < 100) {
+    if (batteryLevel < 20) {
       if (!isEmailSent) {
         await sendEmail(
           "filqwerty987@gmail.com",
@@ -65,6 +66,19 @@ client.on('message', async (topic, message) => {
     } else {
       isEmailSent = false;
     }
+  }
+});
+client.on('message', async function (topic, message) {
+  if (topic === "Status/sendEmail") {
+    s = message.toString();
+    console.log(s);
+    if (s === "Armed" || s==="Disarmed"){
+    await sendEmail(
+      "filqwerty987@gmail.com",
+      "The system status is " + s,
+      "The system status has been changed to : " +s
+    );
+  }
   }
 });
 
