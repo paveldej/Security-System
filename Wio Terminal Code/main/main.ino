@@ -3,21 +3,21 @@
 #include <SparkFunBQ27441.h>
 
 // Update these with values suitable for your network.
-const char *ssid = "Tele2_997726";      // your network SSID
-const char *password = "6fh7j5vf"; // your network password
+const char *ssid = "forza juve";      // your network SSID
+const char *password = "filqwerty"; // your network password
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
-const char *subBatteryLevelRequest = "wioTerminal/battery/request";
 const char *server = "test.mosquitto.org"; // Server URL
-bool armed = "true";
+// const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+// const char *server = "broker.emqx.io"; //alternative mqtt broker
+
+bool armed = true;
 String receivedMessage = ""; // Global string to store the message
 unsigned long start;
-
-
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -60,11 +60,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Print the received message
   Serial.println(receivedMessage);
   
-  if(String(topic) == String(subBatteryLevelRequest)) {
-    updateBattery();
-    return;
-  }
-
   // Optionally, you can perform other actions based on the message
   // For example:
    if (receivedMessage == "arm") { armed = true; updateStatus();}
@@ -155,6 +150,7 @@ void updateBattery () {
   client.publish(pubBatteryLevel, buffer);
 }
 
+unsigned long updateBatteryPeriod = millis();
 
 void loop()
 {
@@ -163,6 +159,12 @@ void loop()
   }  
   client.loop();
   
+  // send battery info every n/1000 seconds
+  if (millis() - updateBatteryPeriod >= 10000) {
+    updateBattery();
+    updateBatteryPeriod = millis();
+  }
+
   if (armed == false){
     return;
   }
