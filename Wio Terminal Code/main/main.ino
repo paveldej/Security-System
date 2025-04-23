@@ -1,6 +1,7 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
 #include "AlarmTrigger.h"
+#include <SparkFunBQ27441.h>
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -10,17 +11,39 @@ const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
+const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
-bool armed = "true";
+// const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+// const char *server = "broker.emqx.io"; //alternative mqtt broker
+
+bool armed = true;
 String receivedMessage = ""; // Global string to store the message
 unsigned long start;
-
-
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
-AlarmTrigger alarmTrigger;
+const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
+
+void setupBattery(void)
+{
+  // Use lipo.begin() to initialize the BQ27441-G1A and confirm that it's
+  // connected and communicating.
+  if (!lipo.begin()) // begin() will return true if communication is successful
+  {
+  // If communication fails, print an error message and loop forever.
+    Serial.println("Error: Unable to communicate with BQ27441.");
+    Serial.println("  Check wiring and try again.");
+    Serial.println("  (Battery must be plugged into Battery Babysitter!)");
+    while (1) ;
+  }
+  Serial.println("Connected to BQ27441!");
+  
+  // Uset lipo.setCapacity(BATTERY_CAPACITY) to set the design capacity
+  // of your battery.
+  lipo.setCapacity(BATTERY_CAPACITY);
+}
+
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -34,10 +57,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i = 0; i < length; i++) {
     receivedMessage += (char)payload[i];  // Append each character to the string
   }
-  
+
   // Print the received message
   Serial.println(receivedMessage);
-
+  
   // Optionally, you can perform other actions based on the message
   // For example:
    if (receivedMessage == "arm") { armed = true; updateStatus();}
@@ -46,6 +69,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
       updateStatus();
    }
 }
+
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected())
@@ -59,8 +83,11 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
+      client.subscribe(subBatteryLevelRequest);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      Serial.print("Subcribed to: ");
+      Serial.println(subBatteryLevelRequest);
     }
     else {
       Serial.print("failed, rc=");
@@ -76,6 +103,7 @@ void setup()
 {
   armed = true;
   Serial.begin(115200);
+  setupBattery();
   start = millis();
   while (!Serial && millis() - start < 5000) 
     ; // Wait for Serial to be ready or time out after 5 seconds, 
@@ -101,6 +129,7 @@ void setup()
   client.setCallback(callback);
 }
 
+//send battery status via mqtt
 void updateStatus()
 {
   {
@@ -112,6 +141,17 @@ void updateStatus()
   }
 }
 
+// send battery status via mqtt
+void updateBattery () {
+  byte soc = lipo.soc(); // read battery percentage
+  Serial.print("sending battery info: ");
+  Serial.println(soc);
+  char buffer[4];
+  itoa(soc, buffer, 10);
+  client.publish(pubBatteryLevel, buffer);
+}
+
+unsigned long updateBatteryPeriod = millis();
 
 void loop()
 {
@@ -119,6 +159,13 @@ void loop()
     reconnect();
   }  
   client.loop();
+  
+  // send battery info every n/1000 seconds
+  if (millis() - updateBatteryPeriod >= 10000) {
+    updateBattery();
+    updateBatteryPeriod = millis();
+  }
+
   if (armed == false){
     return;
   }
