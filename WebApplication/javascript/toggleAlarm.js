@@ -1,8 +1,9 @@
+// const client = mqtt.connect('ws://mqtt.eclipseprojects.io:80/mqtt');
+
 document.addEventListener("DOMContentLoaded", () => {
 let s = "arm"; // initial state
 const armButton = document.getElementById("armButton");
 const systemStatus = document.getElementById("systemStatus");
-const client = mqtt.connect('wss://test.mosquitto.org:8081');
 
 // When connected
 client.on('connect', () => {
