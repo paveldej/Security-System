@@ -43,12 +43,24 @@ bool AlarmTrigger::objectIsClose(long threshold) {
 
 //the seconds denote how long should the alarm be triggered
 void AlarmTrigger::triggerAlarm(int seconds) {
-
+  
+  int blinkRate = 500;
+  unsigned long startTime = millis();
+  
   alarmTrigger.playAlarmSound();
-  alarmTrigger.turnLightRed();
-  
-  delay(seconds*1000);
-  
+
+  //blink light red
+  while (millis() - startTime <= seconds*1000) {
+
+    unsigned long current = millis();
+
+    if ((current / blinkRate) % 2 == 0){
+      leds.setColorRGB(0, 50, 0, 0); // red
+    } else {
+      leds.setColorRGB(0, 0, 0, 0); // off
+    }
+  }
+
   alarmTrigger.turnLightGreen();
   alarmTrigger.stopAlarmSound();
 }

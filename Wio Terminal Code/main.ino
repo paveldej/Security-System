@@ -122,9 +122,9 @@ void loop()
   if (armed == false){
     return;
   }
-  //we trigger it when its less than or equal to 40 cms and it triggers for 4 seconds
+  //we trigger it when its less than or equal to 40 cms and it triggers for 30 seconds
   if (alarmTrigger.objectIsClose(40)){
-    alarmTrigger.triggerAlarm(4);
+    alarmTrigger.triggerAlarm(30);
   }
   delay(500);
 }
