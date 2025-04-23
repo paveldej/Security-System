@@ -1,5 +1,6 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
+#include "AlarmTrigger.h"
 #include <SparkFunBQ27441.h>
 
 // Update these with values suitable for your network.
@@ -168,4 +169,9 @@ void loop()
   if (armed == false){
     return;
   }
+  //we trigger it when its less than or equal to 40 cms and it triggers for 30 seconds
+  if (alarmTrigger.objectIsClose(40)){
+    alarmTrigger.triggerAlarm(30);
+  }
+  delay(500);
 }
