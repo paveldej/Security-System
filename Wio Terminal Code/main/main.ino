@@ -23,6 +23,8 @@ unsigned long start;
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
+AlarmTrigger alarmTrigger;
+
 const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
 void setupBattery(void)
@@ -66,7 +68,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
    if (receivedMessage == "arm") { armed = true; updateStatus();}
    else if (receivedMessage == "disarm") { armed = false; updateStatus();}
    else if(receivedMessage == "status"){
-      updateStatus();
+      updateStatusOnPageLoad();
    }
 }
 
@@ -83,11 +85,8 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
-      client.subscribe(subBatteryLevelRequest);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
-      Serial.print("Subcribed to: ");
-      Serial.println(subBatteryLevelRequest);
     }
     else {
       Serial.print("failed, rc=");
@@ -134,13 +133,24 @@ void updateStatus()
 {
   {
     if (armed == true){
+      client.publish("Status/sendEmail","Armed");
+      client.publish(subTopic2, "arm");
+    } else {
+      client.publish("Status/sendEmail","Disarmed");
+      client.publish(subTopic2, "disarm");
+    }
+  }
+}
+void updateStatusOnPageLoad()
+{
+  {
+    if (armed == true){
       client.publish(subTopic2, "arm");
     } else {
       client.publish(subTopic2, "disarm");
     }
   }
 }
-
 // send battery status via mqtt
 void updateBattery () {
   byte soc = lipo.soc(); // read battery percentage
@@ -152,6 +162,7 @@ void updateBattery () {
 }
 
 unsigned long updateBatteryPeriod = millis();
+unsigned long objectDetectedStart = millis();
 
 void loop()
 {
@@ -169,9 +180,15 @@ void loop()
   if (armed == false){
     return;
   }
-  //we trigger it when its less than or equal to 40 cms and it triggers for 30 seconds
-  if (alarmTrigger.objectIsClose(40)){
-    alarmTrigger.triggerAlarm(30);
+
+  //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
+  
+  if (alarmTrigger.objectIsClose(150)){
+    if(millis() - objectDetectedStart >= 15000) {
+      alarmTrigger.triggerAlarm(30);
+    }
+  } else {
+    objectDetectedStart = millis();
   }
   delay(500);
 }
