@@ -87,6 +87,7 @@ void reconnect() {
       client.subscribe(subTopic1);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      updateStatusOnPageLoad();
     }
     else {
       Serial.print("failed, rc=");
@@ -178,6 +179,7 @@ void loop()
   }
 
   if (armed == false){
+    objectDetectedStart = millis();
     return;
   }
 
