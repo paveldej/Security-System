@@ -179,6 +179,7 @@ void loop()
   }
 
   if (armed == false){
+    objectDetectedStart = millis();
     return;
   }
 
