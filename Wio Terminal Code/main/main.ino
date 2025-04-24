@@ -68,7 +68,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
    if (receivedMessage == "arm") { armed = true; updateStatus();}
    else if (receivedMessage == "disarm") { armed = false; updateStatus();}
    else if(receivedMessage == "status"){
-      updateStatus();
+      updateStatusOnPageLoad();
    }
 }
 
@@ -133,13 +133,24 @@ void updateStatus()
 {
   {
     if (armed == true){
+      client.publish("Status/sendEmail","Armed");
+      client.publish(subTopic2, "arm");
+    } else {
+      client.publish("Status/sendEmail","Disarmed");
+      client.publish(subTopic2, "disarm");
+    }
+  }
+}
+void updateStatusOnPageLoad()
+{
+  {
+    if (armed == true){
       client.publish(subTopic2, "arm");
     } else {
       client.publish(subTopic2, "disarm");
     }
   }
 }
-
 // send battery status via mqtt
 void updateBattery () {
   byte soc = lipo.soc(); // read battery percentage
