@@ -51,13 +51,24 @@ void AlarmTrigger::triggerAlarm(int seconds) {
 
   //blink light red
   while (millis() - startTime <= seconds*1000) {
-
+	  
+    //this is needed so it reads from the arming/disarming 
+    //topic even while triggered 
+    client.loop();
+	
     unsigned long current = millis();
 
     if ((current / blinkRate) % 2 == 0){
       leds.setColorRGB(0, 50, 0, 0); // red
     } else {
       leds.setColorRGB(0, 0, 0, 0); // off
+    }
+	
+	//check for user setting alarm to disarmed while alarm triggered
+    if (armed == false){
+      turnLightGreen();
+      stopAlarmSound();
+      return;
     }
   }
 
