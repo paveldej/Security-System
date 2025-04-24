@@ -145,7 +145,6 @@ void updateStatus()
 void updateStatusOnPageLoad()
 {
   {
-    Serial.println(armed);
     if (armed == true){
       client.publish(subTopic2, "arm");
     } else {
