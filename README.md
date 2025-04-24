@@ -11,7 +11,7 @@ You can use a USB-C to power either the terminal directly or to charge the batte
 
 # Connecting the sensors
 
-Once you're connected the battery/chassis you have to plug in the sensors.
+Once you've connected the battery/chassis you have to plug in the sensors.
 
 The "Grove Ultrasonic Ranger" (two tubular metal pieces) is responsible for detecting motions. It should be connected to the port opposite to the three-way power on button (on the battery/chassis).
 
@@ -21,7 +21,14 @@ The "Grove RGB Chainable LED" should be connected directly below the power on bu
 
 Now that you've connected the sensors and provided power, you can now turn the device on. Put it on middle position.
 
-First you have to run the server.js file inside the Web Application/javascript folder in your terminal. Once you've run the command, you must leave the terminal open to use the application. Keep in mind you must have Node.js downloaded. (we need to add which dependencies to add).
+First you have to download Node.js and import the following dependencies using npm:
+- express
+- nodemailer
+- cors
+- dotenv
+- mqtt
+
+Now you can run the "node server.cjs" file inside the Web Application/javascript folder through your terminal. Once you've run the command, you must leave the terminal open to use the application. Keep in mind you must have Node.js downloaded, and all the dependencies imported.
 
 After this, open the Web Application folder and click on the index.html file inside the html folder there.
 
