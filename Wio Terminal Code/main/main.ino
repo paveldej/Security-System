@@ -23,6 +23,8 @@ unsigned long start;
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
+AlarmTrigger alarmTrigger;
+
 const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
 void setupBattery(void)
@@ -83,11 +85,8 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
-      client.subscribe(subBatteryLevelRequest);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
-      Serial.print("Subcribed to: ");
-      Serial.println(subBatteryLevelRequest);
     }
     else {
       Serial.print("failed, rc=");
@@ -152,6 +151,7 @@ void updateBattery () {
 }
 
 unsigned long updateBatteryPeriod = millis();
+unsigned long objectDetectedStart = millis();
 
 void loop()
 {
@@ -169,9 +169,15 @@ void loop()
   if (armed == false){
     return;
   }
-  //we trigger it when its less than or equal to 40 cms and it triggers for 30 seconds
-  if (alarmTrigger.objectIsClose(40)){
-    alarmTrigger.triggerAlarm(30);
+
+  //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
+  
+  if (alarmTrigger.objectIsClose(150)){
+    if(millis() - objectDetectedStart >= 15000) {
+      alarmTrigger.triggerAlarm(30);
+    }
+  } else {
+    objectDetectedStart = millis();
   }
   delay(500);
 }
