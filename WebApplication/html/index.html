@@ -23,13 +23,21 @@
   </div>
   
   <div class="card text-center" id="mainCard">
-    <h3 class="mb-4" id="systemTitle">Home Security System</h3>
+    <h3 class="mb-4" id="systemTitle">Pavel Security System</h3>
     <p class="status-indicator text-success" id="systemStatus">Status: N\A</p>
     <div id="armedIndicator" class="status-light mt-4"></div>
     <div class="d-grid gap-2 mt-4" id="controlButtons">
       <button class="btn btn-success" id="armButton">Arm</button>
     </div>
   </div>
+  <div id="intrusionAlert" class="alert-container intrusion-alert hidden">
+    <div class="custom-alert intrusion-alert-box">
+      <span class="alert-text">🚨 <strong>Intruder detected!</strong> Please check your home immediately.</span>
+      <button class="dismiss-btn" onclick="dismissIntrusionAlert()">×</button>
+    </div>
+  </div>
+  
+  <script src="../javascript/intrusionAlert.js"></script>  
   <script src="../javascript/sendEmail.js"></script>
   <script src="../javascript/allowNotifications.js"></script> 
   <script src="../javascript/batteryNotification.js"></script> 

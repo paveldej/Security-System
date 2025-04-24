@@ -71,3 +71,24 @@ body {
   background-color: #28a745; /* Bootstrap green */
   box-shadow: 0 0 8px #28a745;
 }
+
+/* Intrusion Alert Overriding */
+.intrusion-alert {
+  top: -150px; /* Initially hidden */
+  background-color: #ff4444;
+  color: white;
+}
+
+.intrusion-alert-box {
+  background-color: #ff4444;
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+.intrusion-alert.show {
+  top: 20px;
+}
+
+.intrusion-alert .dismiss-btn {
+  color: white;
+}
