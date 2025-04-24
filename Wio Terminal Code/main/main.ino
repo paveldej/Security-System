@@ -87,6 +87,7 @@ void reconnect() {
       client.subscribe(subTopic1);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      updateStatusOnPageLoad();
     }
     else {
       Serial.print("failed, rc=");
@@ -144,6 +145,7 @@ void updateStatus()
 void updateStatusOnPageLoad()
 {
   {
+    Serial.println(armed);
     if (armed == true){
       client.publish(subTopic2, "arm");
     } else {
