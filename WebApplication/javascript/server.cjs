@@ -81,6 +81,19 @@ client.on('message', async function (topic, message) {
   }
   }
 });
+client.on('message', async (topic, message) => {
+  if (topic === 'Status/triggerEvents') {
+    if(message == "trigger"){
+      if (!isEmailSent) {
+        await sendEmail(
+          "filqwerty987@gmail.com",
+          "Alarm got manually triggered.",
+          "The alarm got manually triggered!"
+        );
+      }
+    }
+  }
+});
 
 client.on('error', (err) => {
   console.error('MQTT Error:', err);

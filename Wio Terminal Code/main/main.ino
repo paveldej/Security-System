@@ -11,6 +11,7 @@ const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
+const char *triggerEvents = "Status/triggerEvents";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
 // const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
@@ -18,6 +19,7 @@ const char *server = "test.mosquitto.org"; // Server URL
 
 bool armed = true;
 String receivedMessage = ""; // Global string to store the message
+String triggerMessage = ""; // global string to store messages for when alarm triggers
 unsigned long start;
 
 WiFiClient wifiClient;
@@ -52,24 +54,39 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("] ");
   
-  // Clear the previous message
-  receivedMessage = "";
+  if (topic == "setStatus") {
+    // Clear the previous message
+    receivedMessage = "";
 
-  // Store the message in the 'receivedMessage' string
-  for (int i = 0; i < length; i++) {
-    receivedMessage += (char)payload[i];  // Append each character to the string
+    // Store the message in the 'receivedMessage' string
+    for (int i = 0; i < length; i++) {
+      receivedMessage += (char)payload[i];  // Append each character to the string
+    }
+
+    // Print the received message
+    Serial.println(receivedMessage);
+    
+    // Optionally, you can perform other actions based on the message
+    // For example:
+    if (receivedMessage == "arm") { armed = true; updateStatus();}
+    else if (receivedMessage == "disarm") { armed = false; updateStatus();}
+    else if(receivedMessage == "status"){
+        updateStatusOnPageLoad();
+    }
+  } else if (topic== "triggerEvents"){
+
+        for (int i = 0; i < length; i++) {
+        triggerMessage += (char)payload[i];  // Append each character to the string
+    }
+
+    if (triggerMessage == "trigger"){ //would make sense to have a bool here considering it should always trigger no matter the trigger message
+        alarmTrigger.triggerAlarm(30);
+        client.publish("Status/triggerEvents","notrigger");
+       
+    }
+
+
   }
-
-  // Print the received message
-  Serial.println(receivedMessage);
-  
-  // Optionally, you can perform other actions based on the message
-  // For example:
-   if (receivedMessage == "arm") { armed = true; updateStatus();}
-   else if (receivedMessage == "disarm") { armed = false; updateStatus();}
-   else if(receivedMessage == "status"){
-      updateStatusOnPageLoad();
-   }
 }
 
 void reconnect() {
@@ -85,9 +102,9 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
+      client.subscribe(triggerEvents);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
-      updateStatusOnPageLoad();
     }
     else {
       Serial.print("failed, rc=");
@@ -179,7 +196,6 @@ void loop()
   }
 
   if (armed == false){
-    objectDetectedStart = millis();
     return;
   }
 
