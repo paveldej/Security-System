@@ -9,6 +9,12 @@
 ChainableLED leds(RGB_LED_DI_PIN, RGB_LED_CI_PIN, 1);
 Ultrasonic ultrasonicSensor(ULTRASONIC_PIN);
 
+//constructor
+AlarmTrigger::AlarmTrigger(){
+  //you may also initialize the leds here, depending on the LED library used
+  leds.setColorRGB(0, 0, 50, 0);
+}
+
 void AlarmTrigger::turnLightRed() {
   leds.setColorRGB(0, 50, 0, 0);
 }
