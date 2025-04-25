@@ -46,6 +46,7 @@ client.on('connect', () => {
   client.subscribe('Status/getStatus');
   client.subscribe('wioTerminal/battery');
   client.subscribe("Status/sendEmail")
+  client.subscribe("alarm/intrusion");
   client.publish('Status/setStatus', 'status');
 });
 
@@ -79,6 +80,18 @@ client.on('message', async function (topic, message) {
       "The system status has been changed to : " +s
     );
   }
+  }
+});
+
+client.on('message', async function (topic, message) {
+  if (topic === "alarm/intrusion" && message.toString() === 'INTRUDER ALERT') {
+    console.log("Intrusion Detected!");
+
+    await sendEmail(
+      "filqwerty987@gmail.com",
+      "Intrusion Alert Detected",
+      "A possible intrusion was detected by the alarm system. Please check your premises immediately."
+    );
   }
 });
 
