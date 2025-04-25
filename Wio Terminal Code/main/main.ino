@@ -101,6 +101,9 @@ void reconnect() {
 
 void setup()
 {
+  //creating an AlarmTrigger object
+  alarmTrigger = AlarmTrigger();
+  
   armed = true;
   Serial.begin(115200);
   setupBattery();

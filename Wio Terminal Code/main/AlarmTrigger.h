@@ -2,6 +2,7 @@
 #define ALARMTRIGGER_H
 class AlarmTrigger{
   public:
+    AlarmTrigger();
     void turnLightRed();
     void turnLightGreen();
     void playAlarmSound();
