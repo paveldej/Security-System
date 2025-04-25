@@ -11,6 +11,7 @@ const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
+const char *pubIntruderAlert = "alarm/intrusion"; // New topic to notify about intruders
 const char *triggerEvents = "Status/triggerEvents";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
@@ -118,6 +119,9 @@ void reconnect() {
 
 void setup()
 {
+  //creating an AlarmTrigger object
+  alarmTrigger = AlarmTrigger();
+  
   armed = true;
   Serial.begin(115200);
   setupBattery();
@@ -203,7 +207,12 @@ void loop()
   
   if (alarmTrigger.objectIsClose(150)){
     if(millis() - objectDetectedStart >= 15000) {
+            if (client.connected()) {
+        client.publish(pubIntruderAlert, "INTRUDER ALERT");
+        Serial.println("Intruder alert published to MQTT!");
+      }
       alarmTrigger.triggerAlarm(30);
+
     }
   } else {
     objectDetectedStart = millis();
