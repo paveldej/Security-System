@@ -1,12 +1,13 @@
-const intrusionClient = mqtt.connect('wss://test.mosquitto.org:8081');
 
-intrusionClient.on('connect', () => {
+
+client.on('connect', () => {
   console.log('Frontend connected to MQTT for intruder alert!');
-  intrusionClient.subscribe('alarm/intrusion');
+  client.subscribe('alarm/intrusion');
 });
 
-intrusionClient.on('message', (topic, message) => {
+client.on('message', (topic, message) => {
   if (topic === 'alarm/intrusion' && message.toString() === 'INTRUDER ALERT') {
+    console.log("sent the notification for intruder");
     showIntrusionAlert();
   }
 });

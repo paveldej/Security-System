@@ -84,7 +84,7 @@ client.on('message', async function (topic, message) {
 });
 
 client.on('message', async function (topic, message) {
-  if (topic === "alarm/intrusion") {
+  if (topic === "alarm/intrusion" && message.toString() === 'INTRUDER ALERT') {
     console.log("Intrusion Detected!");
 
     await sendEmail(
