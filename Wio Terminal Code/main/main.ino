@@ -12,7 +12,8 @@ const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
 const char *pubIntruderAlert = "alarm/intrusion"; // New topic to notify about intruders
-const char *triggerEvents = "Status/triggerEvents";
+const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle manual triggers,
+const char *setTrigger = "Status/setTrigger" // and possibly others in the future
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
 // const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
@@ -74,15 +75,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
     else if(receivedMessage == "status"){
         updateStatusOnPageLoad();
     }
-  } else if (topic== "triggerEvents"){
+  } else if (topic== "setTrigger"){
 
         for (int i = 0; i < length; i++) {
         triggerMessage += (char)payload[i];  // Append each character to the string
     }
 
     if (triggerMessage == "trigger"){ //would make sense to have a bool here considering it should always trigger no matter the trigger message
+        client.publish("Status/getTrigger","trigger");
         alarmTrigger.triggerAlarm(30);
-        client.publish("Status/triggerEvents","notrigger");
+        client.publish("Status/getTrigger","notrigger");
        
     }
 
@@ -103,9 +105,10 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
-      client.subscribe(triggerEvents);
+      client.subscribe(setTrigger);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      Serial.println(setTrigger);
     }
     else {
       Serial.print("failed, rc=");

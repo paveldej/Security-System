@@ -4,28 +4,36 @@ let state = "notrigger"; // initial state
 const triggerButton = document.getElementById("triggerButton");
 const triggerStatus = document.getElementById("triggerStatus");
 
+// When connected
+client.on('connect', () => {
+  client.subscribe('Status/getTrigger', (err) => {
+    if (!err) {
+      console.log('Subscribed to topic: getTrigger');
+
+    }
+  });
+});
 
 client.on('message', function (topic, message) {
-  if (topic === "Status/triggerEvents") {
+  if (topic === "Status/getTrigger") {
     state = message.toString();
     console.log('Received trigger status:', state);
     console.log(state);
-    updateUI();
+    if (state == "trigger"){
+      updateUI();
+    }
+    
   }
 });
+
 // Update button and status text
 function updateUI() {
-  if (state === "notrigger") {
     triggerStatus.textContent = "Status:alarm triggered";
-  } 
 }
 
 // Toggle the alarm status
 function publishTrigger() {
-  if (state === "notrigger") {
     client.publish('Status/triggerEvents', 'trigger');
-  } 
-  
 }
 triggerButton.addEventListener('click', publishTrigger);
 });
