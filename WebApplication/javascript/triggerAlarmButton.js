@@ -1,8 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 let state = "notrigger"; // initial state
-const triggerButton = document.getElementById("triggerButton");
-const triggerStatus = document.getElementById("triggerStatus");
+const triggerButton = document.getElementById("triggerAlarmButton");
 
 // When connected
 client.on('connect', () => {
@@ -19,19 +18,10 @@ client.on('message', function (topic, message) {
     state = message.toString();
     console.log('Received trigger status:', state);
     console.log(state);
-    if (state == "trigger"){
-      updateUI();
-    }
-    
   }
 });
 
-// Update button and status text
-function updateUI() {
-    triggerStatus.textContent = "Status:alarm triggered";
-}
-
-// Toggle the alarm status
+// Trigger the alarm
 function publishTrigger() {
     client.publish('Status/setTrigger', 'trigger');
 }

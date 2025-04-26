@@ -79,6 +79,7 @@ client.on('message', async (topic, message) => {
         console.log(msg);
         if (msg === "Armed" || msg === "Disarmed") {
           await sendEmail(
+            //make it a variable plsssssss
             "filqwerty987@gmail.com",
             "The system status is " + msg,
             "The system status has been changed to: " + msg
@@ -86,20 +87,10 @@ client.on('message', async (topic, message) => {
         }
         break;
 
+      //we now don't distinguish between manual and 
+      //non-manual triggering in the mail
       case 'Status/getTrigger':
-        if (msg === "trigger") {
-          if (!isEmailSent) {
-            await sendEmail(
-              "filqwerty987@gmail.com",
-              "Alarm got manually triggered.",
-              "The alarm got manually triggered!"
-            );
-          }
-        }
-        break;
-
-      case 'alarm/intrusion':
-        if (msg === 'INTRUDER ALERT') {
+        if (msg === 'trigger') {
           console.log("Intrusion Detected!");
           await sendEmail(
             "filqwerty987@gmail.com",
