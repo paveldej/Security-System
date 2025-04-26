@@ -33,7 +33,7 @@ function updateUI() {
 
 // Toggle the alarm status
 function publishTrigger() {
-    client.publish('Status/triggerEvents', 'trigger');
+    client.publish('Status/setTrigger', 'trigger');
 }
 triggerButton.addEventListener('click', publishTrigger);
 });

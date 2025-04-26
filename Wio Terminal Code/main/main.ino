@@ -56,7 +56,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("] ");
   
-  if (topic == "setStatus") {
+  if (String(topic) == "Status/setStatus") {
     // Clear the previous message
     receivedMessage = "";
 
@@ -75,7 +75,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     else if(receivedMessage == "status"){
         updateStatusOnPageLoad();
     }
-  } else if (topic== "setTrigger"){
+  } else if (String(topic)== "Status/setTrigger"){
 
         for (int i = 0; i < length; i++) {
         triggerMessage += (char)payload[i];  // Append each character to the string

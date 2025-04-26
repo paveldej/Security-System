@@ -45,66 +45,72 @@ client.on('connect', () => {
   console.log('Connected to MQTT broker');
   client.subscribe('Status/getStatus');
   client.subscribe('wioTerminal/battery');
-  client.subscribe("Status/sendEmail")
+  client.subscribe("Status/sendEmail");
+  client.subscribe("Status/getTrigger");
   client.subscribe("alarm/intrusion");
   client.publish('Status/setStatus', 'status');
 });
 
+// FIXED: combined into one 'message' event listener
 client.on('message', async (topic, message) => {
-  if (topic === 'wioTerminal/battery') {
-    const batteryLevel = parseInt(message.toString());
-    console.log("Battery Level:", batteryLevel);
+  try {
+    const msg = message.toString();
 
-    if (batteryLevel < 20) {
-      if (!isEmailSent) {
-        await sendEmail(
-          "filqwerty987@gmail.com",
-          "Battery Level Is Low",
-          "The battery level is below 20%. Please check the power supply."
-        );
-        isEmailSent = true;
-      }
-    } else {
-      isEmailSent = false;
+    switch (topic) {
+      case 'wioTerminal/battery':
+        const batteryLevel = parseInt(msg);
+        console.log("Battery Level:", batteryLevel);
+
+        if (batteryLevel < 20) {
+          if (!isEmailSent) {
+            await sendEmail(
+              "filqwerty987@gmail.com",
+              "Battery Level Is Low",
+              "The battery level is below 20%. Please check the power supply."
+            );
+            isEmailSent = true;
+          }
+        } else {
+          isEmailSent = false;
+        }
+        break;
+
+      case 'Status/sendEmail':
+        console.log(msg);
+        if (msg === "Armed" || msg === "Disarmed") {
+          await sendEmail(
+            "filqwerty987@gmail.com",
+            "The system status is " + msg,
+            "The system status has been changed to: " + msg
+          );
+        }
+        break;
+
+      case 'Status/getTrigger':
+        if (msg === "trigger") {
+          if (!isEmailSent) {
+            await sendEmail(
+              "filqwerty987@gmail.com",
+              "Alarm got manually triggered.",
+              "The alarm got manually triggered!"
+            );
+          }
+        }
+        break;
+
+      case 'alarm/intrusion':
+        if (msg === 'INTRUDER ALERT') {
+          console.log("Intrusion Detected!");
+          await sendEmail(
+            "filqwerty987@gmail.com",
+            "Intrusion Alert Detected",
+            "A possible intrusion was detected by the alarm system. Please check your premises immediately."
+          );
+        }
+        break;
     }
-  }
-});
-client.on('message', async function (topic, message) {
-  if (topic === "Status/sendEmail") {
-    s = message.toString();
-    console.log(s);
-    if (s === "Armed" || s==="Disarmed"){
-    await sendEmail(
-      "filqwerty987@gmail.com",
-      "The system status is " + s,
-      "The system status has been changed to : " +s
-    );
-  }
-  }
-});
-client.on('message', async (topic, message) => {
-  if (topic === 'Status/triggerEvents') {
-    if(message == "trigger"){
-      if (!isEmailSent) {
-        await sendEmail(
-          "filqwerty987@gmail.com",
-          "Alarm got manually triggered.",
-          "The alarm got manually triggered!"
-        );
-      }
-    }
-  }
-});
-
-client.on('message', async function (topic, message) {
-  if (topic === "alarm/intrusion" && message.toString() === 'INTRUDER ALERT') {
-    console.log("Intrusion Detected!");
-
-    await sendEmail(
-      "filqwerty987@gmail.com",
-      "Intrusion Alert Detected",
-      "A possible intrusion was detected by the alarm system. Please check your premises immediately."
-    );
+  } catch (err) {
+    console.error('Error handling MQTT message:', err);
   }
 });
 
