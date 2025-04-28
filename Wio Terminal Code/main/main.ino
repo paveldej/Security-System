@@ -85,13 +85,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
       //would make sense to have a bool here considering it should always trigger no matter the trigger message
       if (triggerMessage == "trigger") {
         client.publish("Status/getTrigger","trigger");
-        originalState = armed;
-        armed = true;
-        updateStatusOnPageLoad();
-        alarmTrigger.triggerAlarm(30);
-        armed = originalState;
-        updateStatusOnPageLoad();
-        client.publish("Status/setTrigger","notrigger");
+        alarmTrigger.triggerAlarmManual(5);
+        client.publish("Status/getTrigger","notrigger");
     }
   }
 }
@@ -113,6 +108,7 @@ void reconnect() {
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
       Serial.println(setTrigger);
+      updateStatusOnPageLoad();
     }
     else {
       Serial.print("failed, rc=");
@@ -215,11 +211,9 @@ void loop()
   
   if (alarmTrigger.objectIsClose(40)){
     if(millis() - objectDetectedStart >= 15000) {
-        if (client.connected()) {
-          client.publish(setTrigger, "trigger");
-          Serial.println("Intruder alert published to MQTT!");
-      }
-      alarmTrigger.triggerAlarm(5);
+      client.publish(getTrigger, "trigger");
+      Serial.println("Intruder alert published to MQTT!");
+      alarmTrigger.triggerAlarm(30);
     }
   } else {
     objectDetectedStart = millis();

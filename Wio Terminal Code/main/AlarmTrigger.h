@@ -9,5 +9,6 @@ class AlarmTrigger{
     void stopAlarmSound();
     bool objectIsClose(long threshold);
     void triggerAlarm(int seconds);
+    void triggerAlarmManual(int seconds);
 };
 #endif
