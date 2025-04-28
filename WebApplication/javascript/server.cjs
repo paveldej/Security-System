@@ -47,7 +47,6 @@ client.on('connect', () => {
   client.subscribe('wioTerminal/battery');
   client.subscribe("Status/sendEmail");
   client.subscribe("Status/getTrigger");
-  client.subscribe("alarm/intrusion");
   client.publish('Status/setStatus', 'status');
 });
 

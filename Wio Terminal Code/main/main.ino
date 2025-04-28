@@ -19,6 +19,7 @@ const char *server = "test.mosquitto.org"; // Server URL
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
+bool originalState = true;
 String receivedMessage = ""; // Global string to store the message
 String triggerMessage = ""; // global string to store messages for when alarm triggers
 unsigned long start;
@@ -84,9 +85,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
       //would make sense to have a bool here considering it should always trigger no matter the trigger message
       if (triggerMessage == "trigger") {
         client.publish("Status/getTrigger","trigger");
+        originalState = armed;
         armed = true;
         updateStatusOnPageLoad();
         alarmTrigger.triggerAlarm(30);
+        armed = originalState;
+        updateStatusOnPageLoad();
         client.publish("Status/setTrigger","notrigger");
     }
   }
@@ -209,13 +213,13 @@ void loop()
 
   //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
   
-  if (alarmTrigger.objectIsClose(150)){
+  if (alarmTrigger.objectIsClose(40)){
     if(millis() - objectDetectedStart >= 15000) {
         if (client.connected()) {
           client.publish(setTrigger, "trigger");
           Serial.println("Intruder alert published to MQTT!");
       }
-      alarmTrigger.triggerAlarm(30);
+      alarmTrigger.triggerAlarm(5);
     }
   } else {
     objectDetectedStart = millis();
