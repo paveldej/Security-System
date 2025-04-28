@@ -12,6 +12,7 @@
     const client = mqtt.connect('wss://test.mosquitto.org:8081');
   </script>
   <script src="../javascript/toggleAlarm.js"></script> 
+  <script src="../javascript/triggerAlarmButton.js"></script>
 </head>
 
 <body>
@@ -28,6 +29,7 @@
     <div id="armedIndicator" class="status-light mt-4"></div>
     <div class="d-grid gap-2 mt-4" id="controlButtons">
       <button class="btn btn-success" id="armButton">Arm</button>
+      <button class="btn btn-danger" id="triggerAlarmButton">Trigger Alarm</button>
     </div>
   </div>
   <div id="intrusionAlert" class="alert-container intrusion-alert hidden">

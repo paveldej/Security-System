@@ -43,7 +43,6 @@ function toggleAlarm() {
   } else {
     client.publish('Status/setStatus', 'arm');
   }
-  
 }
 armButton.addEventListener('click', toggleAlarm);
 });

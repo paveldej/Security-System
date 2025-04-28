@@ -2,11 +2,11 @@
 
 client.on('connect', () => {
   console.log('Frontend connected to MQTT for intruder alert!');
-  client.subscribe('alarm/intrusion');
+  client.subscribe('Status/getTrigger');
 });
 
 client.on('message', (topic, message) => {
-  if (topic === 'alarm/intrusion' && message.toString() === 'INTRUDER ALERT') {
+  if (topic === 'Status/getTrigger' && message.toString() === 'trigger') {
     console.log("sent the notification for intruder");
     showIntrusionAlert();
   }

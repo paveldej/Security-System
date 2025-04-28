@@ -11,14 +11,17 @@ const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
 const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
-const char *pubIntruderAlert = "alarm/intrusion"; // New topic to notify about intruders
+const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle manual triggers,
+const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
 // const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
+bool originalState = true;
 String receivedMessage = ""; // Global string to store the message
+String triggerMessage = ""; // global string to store messages for when alarm triggers
 unsigned long start;
 
 WiFiClient wifiClient;
@@ -53,24 +56,39 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("] ");
   
-  // Clear the previous message
-  receivedMessage = "";
+  if (String(topic) == "Status/setStatus") {
+    // Clear the previous message
+    receivedMessage = "";
 
-  // Store the message in the 'receivedMessage' string
-  for (int i = 0; i < length; i++) {
-    receivedMessage += (char)payload[i];  // Append each character to the string
-  }
+    // Store the message in the 'receivedMessage' string
+    for (int i = 0; i < length; i++) {
+      receivedMessage += (char)payload[i];  // Append each character to the string
+    }
 
-  // Print the received message
-  Serial.println(receivedMessage);
-  
-  // Optionally, you can perform other actions based on the message
-  // For example:
-   if (receivedMessage == "arm") { armed = true; updateStatus();}
-   else if (receivedMessage == "disarm") { armed = false; updateStatus();}
-   else if(receivedMessage == "status"){
+    // Print the received message
+    Serial.println(receivedMessage);
+    
+    // Optionally, you can perform other actions based on the message
+    // For example:
+    if (receivedMessage == "arm") { armed = true; updateStatus();}
+    else if (receivedMessage == "disarm") { armed = false; updateStatus();}
+    else if(receivedMessage == "status"){
       updateStatusOnPageLoad();
-   }
+    }
+  } else if (String(topic)== "Status/setTrigger") {
+      triggerMessage = "";
+      for (int i = 0; i < length; i++) { 
+        triggerMessage += (char)payload[i];
+        } // Append each character to the string
+      
+      Serial.println(triggerMessage);
+      //would make sense to have a bool here considering it should always trigger no matter the trigger message
+      if (triggerMessage == "trigger") {
+        client.publish("Status/getTrigger","trigger");
+        alarmTrigger.triggerAlarmManual(5);
+        client.publish("Status/getTrigger","notrigger");
+    }
+  }
 }
 
 void reconnect() {
@@ -86,8 +104,10 @@ void reconnect() {
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
       client.subscribe(subTopic1);
+      client.subscribe(setTrigger);
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
+      Serial.println(setTrigger);
       updateStatusOnPageLoad();
     }
     else {
@@ -189,14 +209,11 @@ void loop()
 
   //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
   
-  if (alarmTrigger.objectIsClose(150)){
+  if (alarmTrigger.objectIsClose(40)){
     if(millis() - objectDetectedStart >= 15000) {
-            if (client.connected()) {
-        client.publish(pubIntruderAlert, "INTRUDER ALERT");
-        Serial.println("Intruder alert published to MQTT!");
-      }
+      client.publish(getTrigger, "trigger");
+      Serial.println("Intruder alert published to MQTT!");
       alarmTrigger.triggerAlarm(30);
-
     }
   } else {
     objectDetectedStart = millis();
