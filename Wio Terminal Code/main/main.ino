@@ -2,6 +2,7 @@
 #include <PubSubClient.h>
 #include "AlarmTrigger.h"
 #include <SparkFunBQ27441.h>
+#include "TerminalDisplay.h"
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -195,6 +196,9 @@ void loop()
     reconnect();
   }  
   client.loop();
+
+  //calling displaying alarm state functionality from TerminalDisplay
+  TerminalDisplay::displayStatus(armed);
   
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= 10000) {
