@@ -1,17 +1,17 @@
 #include "display.h"
 #include "buttons.h"
+#include "rpcWiFi.h"
 
-// extern std::vector<String> mainMenuOptions;
-// extern int selectedMainOption;
-// extern int mainOptionCount;
 TFT_eSPI tft;
+ScreenState screen = MAIN_MENU;
 
 const std::map<String, ScreenState> optionToScreen = {
-  {"connect to wifi", WIFI_LIST}
+  {"connect to wifi", WIFI_LIST},
+  {"connect", PASSWORD_ENTRY}
 };
 
 //for main menu
-extern std::vector<String> mainMenuOptions;  // NO assignment here
+std::vector<String> mainMenuOptions = {"connect to wifi","new option", "one more"};
 int selectedMainOption = 0;
 int mainOptionCount = mainMenuOptions.size();
 
@@ -42,13 +42,30 @@ void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
 }
 
 void drawWiFiList(const std::vector<String>& ssids, int selected) {
+  const int itemsPerPage = 7;
+  int page = selected / itemsPerPage;
+  int start = page * itemsPerPage;
+  int end = min(start + itemsPerPage, ssids.size());
+  int totalPages = (ssids.size() + itemsPerPage - 1) / itemsPerPage;
+
   tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
-  for (int i = 0; i < ssids.size(); i++) {
-    if (i == selected) tft.setTextColor(TFT_GREEN);
-    else tft.setTextColor(TFT_WHITE);
-    tft.setCursor(10, 30 + i * 30);
+  tft.setTextColor(TFT_WHITE);
+  tft.setCursor(10, 5);
+  tft.println("Select Wi-Fi:       " + String(page + 1) + "/" + String(totalPages));
+
+  for (int i = start; i < end; i++) {
+    int displayIndex = i - start;
+    int y = 30 + displayIndex * 30;
+    
+    if (i == selected) {
+      tft.fillRect(0, y, 320, 30, TFT_YELLOW);
+      tft.setTextColor(TFT_BLACK);
+    } else {
+      tft.setTextColor(TFT_WHITE);
+    }
+
+    tft.setCursor(10, y + 5);
     tft.print(ssids[i]);
   }
 }
@@ -114,17 +131,111 @@ void handleMainMenu() {
     delay(100);
   }
   if (readButton() == CENTER) {
-    Serial.print("hello");
-    delay(100);
+    screen = optionToScreen.at(mainMenuOptions[selectedMainOption]);
+    delay(200);
+    if (screen == WIFI_LIST) {
+      scanNetworks();
+      drawWiFiList(ssids, selectedSSID);
+    }
   }
 }
 
 void handleWiFiList() {
-
+  if (readButton() == UP) {
+    selectedSSID = (selectedSSID - 1 + ssidCount) % ssidCount;
+    drawWiFiList(ssids, selectedSSID);
+    delay(100);
+  }
+  if (readButton() == DOWN) {
+    selectedSSID = (selectedSSID + 1) % ssidCount;
+    drawWiFiList(ssids, selectedSSID);
+    delay(100);
+  }
+  if (readButton() == CENTER) {
+    screen = optionToScreen.at("connect");
+    delay(200);
+  }
 }
 
-void handlePasswordEntry() {
+// Creates a list with all available wifi ssid's
+void scanNetworks() {
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(10, 10);
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.println("Scanning Wi-Fi...");
 
+  ssids.clear();
+
+  int found = WiFi.scanNetworks();
+  for (int i = 0; i < found && ssids.size() < 20; i++) {
+    String ssid = WiFi.SSID(i);
+    if (ssid.length() == 0) continue;
+
+    bool duplicate = false;
+    for (const auto& existing : ssids) {
+      if (existing == ssid) {
+        duplicate = true;
+        break;
+      }
+    }
+    if (!duplicate) {
+      ssids.push_back(ssid);
+      Serial.println(ssid);
+    }
+  }
+
+  ssidCount = ssids.size();
+}
+
+
+void handlePasswordEntry() {
+  const char** keyboard = getKeyboardLayout();
+
+  if (readButton() == UP) {
+    row = (row + 4) % 5;
+    drawKeyboard();
+    delay(100);
+  }
+  if (readButton() == DOWN) {
+    row = (row + 1) % 5;
+    drawKeyboard();
+    delay(100);
+  }
+  if (readButton() == LEFT) {
+    col = (col + 5) % 6;
+    drawKeyboard();
+    delay(100);
+  }
+  if (readButton() == RIGHT) {
+    col = (col + 1) % 6;
+    drawKeyboard();
+    delay(100);
+  }
+
+  if (readButton() == CENTER) {
+    char c = keyboard[row][col];
+    if (c == '<') {
+      if (passwordInput.length() > 0) passwordInput.remove(passwordInput.length() - 1);
+    } else if (c != ' ') {
+      passwordInput += c;
+    }
+    drawPassword();
+    delay(200);
+  }
+
+  if (readButton() == A) {
+    screen = CONNECTING;
+    drawConnecting();
+    connectToWiFi();
+    delay(200);
+  }
+
+  if (readButton() == B) {
+    kbMode = static_cast<KeyboardMode>((kbMode + 1) % 4);
+    drawKeyboard();
+    delay(200);
+  }
 }
 
 void handleConnecting() {
