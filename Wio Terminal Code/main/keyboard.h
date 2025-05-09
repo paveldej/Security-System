@@ -5,11 +5,12 @@
 enum KeyboardMode { UPPER, LOWER, DIGITS, SYMBOLS };
 extern KeyboardMode kbMode;
 
-const char** getKeyboardLayout();
-void drawKeyboard();
-void drawPassword();
-
 extern String passwordInput;
 extern int row, col;
+
+const char** getKeyboardLayout();
+
+void switchKeyboardLayout();
+
 
 #endif

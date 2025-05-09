@@ -1,5 +1,6 @@
 #include "display.h"
 #include "buttons.h"
+#include "keyboard.h"
 #include "rpcWiFi.h"
 
 TFT_eSPI tft;
@@ -19,6 +20,8 @@ int mainOptionCount = mainMenuOptions.size();
 std::vector<String> ssids;
 int selectedSSID = 0;
 int ssidCount = 0;
+
+extern const char** keyboard;
 
 void initializeDisplay() {
   tft.begin();
@@ -49,10 +52,12 @@ void drawWiFiList(const std::vector<String>& ssids, int selected) {
   int totalPages = (ssids.size() + itemsPerPage - 1) / itemsPerPage;
 
   tft.fillScreen(TFT_BLACK);
+  tft.fillRect(0,0,320,25, TFT_GREEN);
   tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
   tft.setCursor(10, 5);
+  tft.setTextColor(TFT_BLACK);
   tft.println("Select Wi-Fi:       " + String(page + 1) + "/" + String(totalPages));
+  tft.setTextColor(TFT_WHITE);
 
   for (int i = start; i < end; i++) {
     int displayIndex = i - start;
@@ -80,6 +85,7 @@ void drawPassword(const String& password) {
 
 void drawKeyboard(const char** layout, int row, int col) {
   tft.fillRect(0, 40, 320, 200, TFT_BLACK);
+  tft.fillRect(0, 195, 320, 240, TFT_GREEN);
   for (int r = 0; r < 5; r++) {
     for (int c = 0; c < 6; c++) {
       int x = c * 50 + 10;
@@ -95,6 +101,11 @@ void drawKeyboard(const char** layout, int row, int col) {
       tft.print(ch);
     }
   }
+  tft.setCursor(10,200);
+  tft.setTextColor(TFT_BLACK, TFT_GREEN);
+  tft.print("\"UPRIGHT\"- connect");
+  tft.setCursor(10,220);
+  tft.print("\"UPMID\"- change layout");
 }
 
 void drawConnecting(const String& ssid) {
@@ -153,6 +164,14 @@ void handleWiFiList() {
   }
   if (readButton() == CENTER) {
     screen = optionToScreen.at("connect");
+    drawKeyboard(keyboard,row,col);
+    drawPassword(passwordInput);
+    delay(200);
+  }
+
+  if (readButton() == C) {
+    screen = MAIN_MENU;
+    drawMainMenu(mainMenuOptions, selectedMainOption);
     delay(200);
   }
 }
@@ -190,26 +209,25 @@ void scanNetworks() {
 
 
 void handlePasswordEntry() {
-  const char** keyboard = getKeyboardLayout();
 
   if (readButton() == UP) {
     row = (row + 4) % 5;
-    drawKeyboard();
+    drawKeyboard(keyboard,row,col);
     delay(100);
   }
   if (readButton() == DOWN) {
     row = (row + 1) % 5;
-    drawKeyboard();
+    drawKeyboard(keyboard,row,col);
     delay(100);
   }
   if (readButton() == LEFT) {
     col = (col + 5) % 6;
-    drawKeyboard();
+    drawKeyboard(keyboard,row,col);
     delay(100);
   }
   if (readButton() == RIGHT) {
     col = (col + 1) % 6;
-    drawKeyboard();
+    drawKeyboard(keyboard,row,col);
     delay(100);
   }
 
@@ -220,20 +238,25 @@ void handlePasswordEntry() {
     } else if (c != ' ') {
       passwordInput += c;
     }
-    drawPassword();
+    drawPassword(passwordInput);
     delay(200);
-  }
-
-  if (readButton() == A) {
-    screen = CONNECTING;
-    drawConnecting();
-    connectToWiFi();
-    delay(200);
-  }
+  } 
+  // if (readButton() == A) {
+  //   screen = CONNECTING;
+  //   drawConnecting(ssids[selectedSSID]);
+  //   connectToWiFi();
+  //   delay(200);
+  // }
 
   if (readButton() == B) {
-    kbMode = static_cast<KeyboardMode>((kbMode + 1) % 4);
-    drawKeyboard();
+    switchKeyboardLayout();
+    drawKeyboard(keyboard,row,col);
+    delay(200);
+  }
+
+  if (readButton() == C) {
+    screen = WIFI_LIST;
+    drawWiFiList(ssids, selectedSSID);
     delay(200);
   }
 }
