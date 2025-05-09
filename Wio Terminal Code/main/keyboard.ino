@@ -1,9 +1,10 @@
 #include "keyboard.h"
 #include <TFT_eSPI.h>
 
-extern TFT_eSPI tft; // Use from main file
+extern TFT_eSPI tft;
 
 KeyboardMode kbMode = UPPER;
+//set of keyboard characters to display 
 const char** keyboard = getKeyboardLayout();
 String passwordInput = "";
 int row = 0, col = 0;
