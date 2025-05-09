@@ -4,11 +4,14 @@
 #include "rpcWiFi.h"
 
 TFT_eSPI tft;
+// current screen frame to display
 ScreenState screen = MAIN_MENU;
 
+/**
+* needed to map main menu options to appropriate screen frames
+*/
 const std::map<String, ScreenState> optionToScreen = {
-  {"connect to wifi", WIFI_LIST},
-  {"connect", PASSWORD_ENTRY}
+  {"connect to wifi", WIFI_LIST}
 };
 
 //for main menu
@@ -124,6 +127,18 @@ void drawConnected(const String& ssid) {
   tft.print("Connected: " + ssid);
 }
 
+void drawFailed(const String& ssid) {
+  tft.fillScreen(TFT_RED);
+  tft.setCursor(10, 100);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.print("Fail to Connect" + ssid);
+}
+
+/**
+ * Handles the current screen frame based on the screen state.
+ * Maps the given screen state to the appropriate handler function and executes it.
+ */
 void handleScreen(ScreenState screen) {
   if (screenHandlers.find(screen) != screenHandlers.end()) {
     screenHandlers[screen]();
@@ -163,7 +178,7 @@ void handleWiFiList() {
     delay(100);
   }
   if (readButton() == CENTER) {
-    screen = optionToScreen.at("connect");
+    screen = PASSWORD_ENTRY;
     drawKeyboard(keyboard,row,col);
     drawPassword(passwordInput);
     delay(200);
@@ -176,7 +191,7 @@ void handleWiFiList() {
   }
 }
 
-// Creates a list with all available wifi ssid's
+// Creates a list with available wifi ssid's
 void scanNetworks() {
   tft.fillScreen(TFT_BLACK);
   tft.setCursor(10, 10);
@@ -209,7 +224,6 @@ void scanNetworks() {
 
 
 void handlePasswordEntry() {
-
   if (readButton() == UP) {
     row = (row + 4) % 5;
     drawKeyboard(keyboard,row,col);
@@ -240,13 +254,13 @@ void handlePasswordEntry() {
     }
     drawPassword(passwordInput);
     delay(200);
-  } 
-  // if (readButton() == A) {
-  //   screen = CONNECTING;
-  //   drawConnecting(ssids[selectedSSID]);
-  //   connectToWiFi();
-  //   delay(200);
-  // }
+  }
+
+  if (readButton() == A) {
+    screen = CONNECTING;
+    drawConnecting(ssids[selectedSSID]);
+    delay(200);
+  }
 
   if (readButton() == B) {
     switchKeyboardLayout();
@@ -262,15 +276,25 @@ void handlePasswordEntry() {
 }
 
 void handleConnecting() {
-
+  connectToWiFi();
+  if (WiFi.isConnected()) {
+    screen = CONNECTED;
+    drawConnected(ssids[selectedSSID]);
+  } else {
+    screen = FAILED;
+    drawFailed(ssids[selectedSSID]);
+  }
+  delay(2000);
 }
 
 void handleConnected() {
-
+  screen = MAIN_MENU;
+  drawMainMenu(mainMenuOptions, selectedMainOption);
 }
 
 void handleConnectionFailed() {
-
+  screen = MAIN_MENU;
+  drawMainMenu(mainMenuOptions, selectedMainOption);
 }
 
 
