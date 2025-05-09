@@ -12,8 +12,8 @@ namespace TerminalDisplay {
     tft.setRotation(3);
     tft.fillScreen(TFT_BLACK);
 
-    sprite.createSprite(SCREEN_WIDTH, SCREEN_HEIGHT);
-    sprite.setTextSize(TEXT_SIZE);
+    spr.createSprite(SCREEN_WIDTH, SCREEN_HEIGHT);
+    spr.setTextSize(TEXT_SIZE);
     //displays arming status
     void displayStatus(bool armed) {
 
@@ -22,15 +22,15 @@ namespace TerminalDisplay {
         //sets armed or disarmed with differing colors
         if (armed){
             status = "Armed";
-            sprite.setTextColor(TFT_RED);
+            spr.setTextColor(TFT_RED);
         } else {
-            status = "Disarmed"
-            sprite.setTextColor(TFT_GREEN);
+            status = "Disarmed";
+            spr.setTextColor(TFT_GREEN);
         }
 
         //displays string centered, pushes sprite to top left corner (0,0)
-        sprite.drawString(status, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-        sprite.pushSprite(0, 0);
-        sprite.deleteSprite();
+        spr.drawString(status, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        spr.pushSprite(0, 0);
+        spr.deleteSprite();
     }
 }
