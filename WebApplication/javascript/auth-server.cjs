@@ -1,18 +1,15 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import session from 'express-session';
-import dotenv from 'dotenv';
+const express = require('express');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
 const app = express();
-app.use(bodyParser.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+const PORT = 4000;
 
+app.use(bodyParser.json());
+
+// Simple login API that compares credentials to values in .env
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -20,20 +17,12 @@ app.post('/login', (req, res) => {
     email === process.env.ADMIN_EMAIL &&
     password === process.env.ADMIN_PASSWORD
   ) {
-    req.session.user = email;
-    res.status(200).json({ success: true, message: 'Login successful' });
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
+    return res.status(200).json({ success: true }); // if right credentails then it will will give success the value of true, which will be used to let the user get access.
   }
+
+  return res.status(401).json({ success: false }); // The user will not be able to get access because of wrong credentails.
 });
 
-app.get('/session-check', (req, res) => {
-  if (req.session.user) {
-    return res.json({ loggedIn: true });
-  }
-  res.status(401).json({ loggedIn: false });
-});
-
-app.listen(4000, () => {
-  console.log('Auth server running on port 4000');
+app.listen(PORT, () => {
+  console.log(`Auth server running on port ${PORT}`);
 });
