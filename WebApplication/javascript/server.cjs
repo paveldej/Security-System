@@ -10,20 +10,6 @@ const client = mqtt.connect('wss://test.mosquitto.org:8081');
 app.use(cors());
 app.use(express.json());
 
-// LOGIN ENDPOINT
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  if (
-    email === process.env.ADMIN_EMAIL &&
-    password === process.env.ADMIN_PASSWORD
-  ) {
-    res.status(200).json({ success: true, message: 'Login successful' });
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
-});
-
 let isEmailSent = false;
 
 app.post('/send-email', async (req, res) => {
