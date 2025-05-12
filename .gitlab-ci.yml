@@ -1,0 +1,67 @@
+image: debian:bullseye
+
+before_script:
+  - pwd
+  - apt-get update
+  - apt-get install -y curl wget gnupg bash git unzip
+  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+  - apt-get install -y nodejs
+  - node -v
+  - npm -v
+  - cd ./CIScripts
+  - pwd
+  - ls -l
+  - chmod +x setup-build-env.sh
+  - ./setup-build-env.sh
+  - cd -
+
+stages:
+  - build
+  - test
+  - verify
+
+build:
+  stage: build
+  tags:
+    - docker
+  script:
+    - curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+    - export PATH=$PATH:/root/bin
+    - pwd
+    - cd Wio\ Terminal\ Code/main
+    - echo "Building project..."
+    - arduino-cli core update-index
+    - arduino-cli core install Seeeduino:samd
+    - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal || { echo "Compiling the arduino code has failed." >&2; exit 1; }
+    - cd -
+  only:
+    - merge_requests
+
+test:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Testing in progress..."
+    - cd ./WebApplication/javascript
+    - npm install
+    - node JsTests.cjs
+    - cd ..
+    - cd ..
+
+  only:
+    - merge_requests
+
+verify:
+  stage: verify
+  tags:
+    - docker
+  script:
+    - echo "Deploying Web application"
+    - cd ./WebApplication/javascript
+    - npm init -y
+    - npm install
+    - node server.cjs send
+
+  only:
+    - merge_requests

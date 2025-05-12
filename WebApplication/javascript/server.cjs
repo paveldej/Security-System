@@ -65,6 +65,10 @@ client.on('connect', () => {
   client.subscribe("Status/sendEmail");
   client.subscribe("Status/getTrigger");
   client.publish('Status/setStatus', 'status');
+  if (process.argv[2] === 'send') {
+    console.log("Deployed");
+    process.exit(0);
+  }
 });
 
 // FIXED: combined into one 'message' event listener
