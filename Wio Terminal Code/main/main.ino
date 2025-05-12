@@ -5,6 +5,9 @@
 #include "Logger.h"
 #include <TimeLib.h>
 #include <ArduinoJson.h>
+#include <WiFiUdp.h>
+#include <NTPClient.h>
+
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -31,7 +34,11 @@ WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
 AlarmTrigger alarmTrigger;
-Logger logger("/log.txt");
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
+Logger logger("/log.json");
+
+
 
 const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
@@ -123,7 +130,16 @@ void reconnect() {
     }
   }
 }
+void setupTime(){
+    timeClient.begin();
 
+  while (!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+
+  // Set system time using TimeLib
+  setTime(timeClient.getEpochTime());
+}
 void setup()
 {
   //creating an AlarmTrigger object
@@ -154,7 +170,9 @@ void setup()
   delay(500);
 
   client.setServer(server, 1883);
-  client.setCallback(callback);
+  client.setCallback(callback); 
+  setupTime();  
+  logger.begin();
 }
 
 //send battery status via mqtt
@@ -199,12 +217,14 @@ void loop()
     reconnect();
   }  
   client.loop();
+  //logger.log("Trigger","Intruder Detected");
   
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= 10000) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
+    logger.publish(client);
 
   if (armed == false){
     objectDetectedStart = millis();
@@ -217,14 +237,12 @@ void loop()
     if(millis() - objectDetectedStart >= 15000) {
       client.publish(getTrigger, "trigger");
       Serial.println("Intruder alert published to MQTT!");
-      if(logger.begin()){
-        logger.log("Trigger","Intruder Detected");
-      }
-      alarmTrigger.triggerAlarm(30);
+     alarmTrigger.triggerAlarm(30);
+     logger.log("Trigger","Intruder Detected");
+     Serial.println("triggered");
     }
   } else {
     objectDetectedStart = millis();
   }
-  logger.publish(client);
   delay(500);
 }
