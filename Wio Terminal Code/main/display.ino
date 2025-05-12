@@ -3,6 +3,8 @@
 #include "keyboard.h"
 #include "rpcWiFi.h"
 
+extern PubSubClient client;
+
 TFT_eSPI tft;
 // current screen frame to display
 ScreenState screen = MAIN_MENU;
@@ -35,8 +37,18 @@ void initializeDisplay() {
 void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
   // you can paste your code to display general information here:
   // Empty space available from 0 to 160th pixel.
-  tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
+  tft.fillScreen(TFT_BLACK);
+  
+  tft.setCursor(10,10);
+  if (isOnline()) {
+    tft.setTextColor(TFT_GREEN);
+    tft.println("Online");
+  } else {
+    tft.setTextColor(TFT_RED);
+    tft.println("Offline");
+  }
+
   tft.setTextColor(TFT_WHITE);
   tft.setCursor(10, 180);
   tft.println("Choose option:");
@@ -45,6 +57,10 @@ void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
 
   tft.setTextColor(TFT_BLACK);
   tft.print("<< "+ mainMenuOptions[selected] + " >>");
+}
+
+bool isOnline() {
+  return client.connected() ? true : false; 
 }
 
 void drawWiFiList(const std::vector<String>& ssids, int selected) {
