@@ -2,6 +2,9 @@
 #include <PubSubClient.h>
 #include "AlarmTrigger.h"
 #include <SparkFunBQ27441.h>
+#include "Logger.h"
+#include <TimeLib.h>
+#include <ArduinoJson.h>
 
 // Update these with values suitable for your network.
 const char *ssid = "forza juve";      // your network SSID
@@ -28,6 +31,7 @@ WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
 AlarmTrigger alarmTrigger;
+Logger logger("/log.txt");
 
 const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
@@ -213,10 +217,14 @@ void loop()
     if(millis() - objectDetectedStart >= 15000) {
       client.publish(getTrigger, "trigger");
       Serial.println("Intruder alert published to MQTT!");
+      if(logger.begin()){
+        logger.log("Trigger","Intruder Detected");
+      }
       alarmTrigger.triggerAlarm(30);
     }
   } else {
     objectDetectedStart = millis();
   }
+  logger.publish(client);
   delay(500);
 }
