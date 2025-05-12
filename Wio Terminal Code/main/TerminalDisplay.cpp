@@ -9,11 +9,14 @@ namespace TerminalDisplay {
 
     TFT_eSPI tft = TFT_eSPI();
     TFT_eSprite spr = TFT_eSprite(&tft);
-    tft.setRotation(3);
-    tft.fillScreen(TFT_BLACK);
+    
+    void initDisplay(){
+        tft.setRotation(3);
+        tft.fillScreen(TFT_BLACK);
 
-    spr.createSprite(SCREEN_WIDTH, SCREEN_HEIGHT);
-    spr.setTextSize(TEXT_SIZE);
+        spr.createSprite(SCREEN_WIDTH, SCREEN_HEIGHT);
+        spr.setTextSize(TEXT_SIZE);
+    }
     //displays arming status
     void displayStatus(bool armed) {
 

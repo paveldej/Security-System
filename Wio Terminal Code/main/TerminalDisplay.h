@@ -2,5 +2,6 @@
 
 namespace TerminalDisplay
 {
-    void displayStatus(bool status);   
+    void displayStatus(bool status);
+    void initDisplay();
 }

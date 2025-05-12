@@ -125,6 +125,7 @@ void setup()
 {
   //creating an AlarmTrigger object
   alarmTrigger = AlarmTrigger();
+  TerminalDisplay::initDisplay();
   
   armed = true;
   Serial.begin(115200);
