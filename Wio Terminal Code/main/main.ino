@@ -167,8 +167,6 @@ void setupTime(){
 void setupMQTT() {
   client.setServer(server, 1883);
   client.setCallback(callback); 
-  setupTime();  
-  logger.begin();
 }
 
 //send battery status via mqtt
@@ -213,7 +211,6 @@ void setup()
   initializeDisplay();
   initializeButtons();
   drawMainMenu(mainMenuOptions,0);
-  
   armed = true;
   //creating an AlarmTrigger object
   alarmTrigger = AlarmTrigger();
@@ -223,7 +220,7 @@ void setup()
 
 unsigned long updateBatteryPeriod = millis();
 unsigned long objectDetectedStart = millis();
-
+bool flag = false;
 void loop()
 {
   handleScreen(screen);
@@ -235,6 +232,11 @@ void loop()
 
   if (!client.connected()) {
     reconnect();
+  }
+  if (flag == false){
+      setupTime();  
+      logger.begin();
+      flag = true;
   }
   client.loop();
   //logger.log("Trigger","Intruder Detected");
