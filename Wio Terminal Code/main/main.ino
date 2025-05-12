@@ -1,11 +1,18 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
-#include "AlarmTrigger.h"
 #include <SparkFunBQ27441.h>
+#include <vector>
+#include "AlarmTrigger.h"
+#include "display.h"
+#include "buttons.h"
 
-// Update these with values suitable for your network.
-const char *ssid = "forza juve";      // your network SSID
-const char *password = "filqwerty"; // your network password
+
+extern std::vector<String> mainMenuOptions;
+extern ScreenState screen;
+
+extern std::vector<String> ssids;
+extern int selectedSSID;
+extern String passwordInput;
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
@@ -50,7 +57,6 @@ void setupBattery(void)
   lipo.setCapacity(BATTERY_CAPACITY);
 }
 
-
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -91,6 +97,24 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+void connectToWiFi() {
+  start = millis();
+  while (!Serial && millis() - start < 5000) 
+    ; // Wait for Serial to be ready or time out after 5 seconds, 
+      //this is essentail, because if the device is not connected (running off the battery), it will wait forever
+  Serial.print("Attempting to connect to SSID: ");
+  Serial.println(ssids[selectedSSID]);
+  WiFi.begin(ssids[selectedSSID].c_str(), passwordInput.c_str());
+
+  if (WiFi.isConnected()) {
+    Serial.print("Connected to ");
+    Serial.println(ssids[selectedSSID]);
+  } else {
+    Serial.print("Failed to connect to: ");
+    Serial.println(ssids[selectedSSID]);
+  }
+}
+
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected())
@@ -120,35 +144,7 @@ void reconnect() {
   }
 }
 
-void setup()
-{
-  //creating an AlarmTrigger object
-  alarmTrigger = AlarmTrigger();
-  
-  armed = true;
-  Serial.begin(115200);
-  setupBattery();
-  start = millis();
-  while (!Serial && millis() - start < 5000) 
-    ; // Wait for Serial to be ready or time out after 5 seconds, 
-      //this is essentail, because if the device is not connected (running off the battery), it will wait forever
-  Serial.print("Attempting to connect to SSID: ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-
-  // attempt to connect to Wifi network:
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print(".");
-    WiFi.begin(ssid, password);
-    // wait 1 second for re-trying
-    delay(1000);
-  }
-  
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  delay(500);
-
+void setupMQTT() {
   client.setServer(server, 1883);
   client.setCallback(callback);
 }
@@ -166,6 +162,7 @@ void updateStatus()
     }
   }
 }
+
 void updateStatusOnPageLoad()
 {
   {
@@ -176,6 +173,7 @@ void updateStatusOnPageLoad()
     }
   }
 }
+
 // send battery status via mqtt
 void updateBattery () {
   byte soc = lipo.soc(); // read battery percentage
@@ -186,14 +184,36 @@ void updateBattery () {
   client.publish(pubBatteryLevel, buffer);
 }
 
+void setup()
+{
+  Serial.begin(115200);
+  setupBattery();
+  initializeDisplay();
+  initializeButtons();
+  drawMainMenu(mainMenuOptions,0);
+  
+  armed = true;
+  //creating an AlarmTrigger object
+  alarmTrigger = AlarmTrigger();
+  
+  setupMQTT();
+}
+
 unsigned long updateBatteryPeriod = millis();
 unsigned long objectDetectedStart = millis();
 
 void loop()
 {
+  handleScreen(screen);
+
+  if (!WiFi.isConnected()) {
+    objectDetectedStart = millis();
+    return;
+  }
+
   if (!client.connected()) {
     reconnect();
-  }  
+  }
   client.loop();
   
   // send battery info every n/1000 seconds
@@ -208,7 +228,6 @@ void loop()
   }
 
   //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
-  
   if (alarmTrigger.objectIsClose(40)){
     if(millis() - objectDetectedStart >= 15000) {
       client.publish(getTrigger, "trigger");
@@ -218,5 +237,5 @@ void loop()
   } else {
     objectDetectedStart = millis();
   }
-  delay(500);
+  delay(100);
 }
