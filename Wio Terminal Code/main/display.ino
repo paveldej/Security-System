@@ -15,7 +15,7 @@ const std::map<String, ScreenState> optionToScreen = {
 };
 
 //for main menu
-std::vector<String> mainMenuOptions = {"connect to wifi","new option", "one more"};
+std::vector<String> mainMenuOptions = {"connect to wifi"};
 int selectedMainOption = 0;
 int mainOptionCount = mainMenuOptions.size();
 
