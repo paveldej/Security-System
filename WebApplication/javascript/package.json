@@ -1,10 +1,9 @@
 {
   "name": "security-system",
   "version": "0.1.0",
-  "type": "module",
-  "main": "sendmail.js",
+  "main": "server.cjs",
   "scripts": {
-    "start": "node sendmail.js"
+    "start": "node server.cjs"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
@@ -16,5 +15,10 @@
     "mqtt": "^5.11.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.10.1"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
