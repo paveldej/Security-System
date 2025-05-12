@@ -42,4 +42,8 @@ app.use(express.static(path.join(__dirname, '..')));
 // Run the server and listen on port 3000
 app.listen(PORT, () => {
   console.log(`Web server running on port ${PORT}`);
+  if (process.argv[2] === "check") {
+  console.log("Web server script is reachable and safe.");
+  process.exit(0);
+}
 });

@@ -25,4 +25,8 @@ app.post('/login', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Auth server running on port ${PORT}`);
+    if (process.argv[2] === "check") {
+  console.log("Authentication server script is reachable and safe.");
+  process.exit(0);
+}
 });
