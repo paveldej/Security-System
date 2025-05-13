@@ -3,6 +3,7 @@
 #include "keyboard.h"
 #include "rpcWiFi.h"
 
+
 TFT_eSPI tft;
 // current screen frame to display
 ScreenState screen = MAIN_MENU;
@@ -38,6 +39,7 @@ void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextColor(TFT_WHITE);
+
   tft.setCursor(10, 180);
   tft.println("Choose option:");
   tft.fillRect(0, 210, 320, 30, TFT_YELLOW);
@@ -295,6 +297,22 @@ void handleConnected() {
 void handleConnectionFailed() {
   screen = MAIN_MENU;
   drawMainMenu(mainMenuOptions, selectedMainOption);
+}
+
+void drawStatus(bool armed) {
+
+  String status = "Armed";
+    //sets armed or disarmed with differing colors
+    if (armed){
+      status = "Armed";
+      tft.setTextColor(TFT_RED, TFT_BLACK);
+    } else {
+      status = "Disarmed";
+      tft.setTextColor(TFT_GREEN, TFT_BLACK);
+    }
+    tft.setTextDatum(MC_DATUM);
+    tft.setTextSize(2);
+    tft.drawString(status, 20, 40);
 }
 
 
