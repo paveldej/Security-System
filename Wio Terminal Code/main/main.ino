@@ -45,6 +45,7 @@ bool originalState = true;
 String receivedMessage = ""; // Global string to store the message
 String triggerMessage = ""; // global string to store messages for when alarm triggers
 unsigned long start;
+byte batteryLevel = 0;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -238,6 +239,7 @@ unsigned long objectDetectedStart = millis();
 bool flag = false;
 void loop()
 {
+  batteryLevel = lipo.soc();
   handleScreen(screen);
 
   if (!WiFi.isConnected()) {

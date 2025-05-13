@@ -5,6 +5,7 @@
 
 extern PubSubClient client;
 extern bool armed;
+extern byte batteryLevel;
 
 TFT_eSPI tft;
 // current screen frame to display
@@ -157,6 +158,7 @@ void handleScreen(ScreenState screen) {
 void handleMainMenu() {
   drawConnectionStatus();
   drawStatus(armed);
+  drawBatteryLevel(batteryLevel);
   if (readButton() == LEFT) {
     selectedMainOption = (selectedMainOption - 1 + mainOptionCount) % mainOptionCount;
     drawMainMenu(mainMenuOptions, selectedMainOption);
@@ -344,6 +346,17 @@ void drawConnectionStatus() {
 
 bool isOnline() {
   return client.connected() && WiFi.isConnected() ? true : false; 
+}
+void drawBatteryLevel(byte bateryLevel){
+      if (bateryLevel<20){
+      tft.setTextColor(TFT_RED, TFT_BLACK);
+    } else {
+      tft.setTextColor(TFT_GREEN, TFT_BLACK);
+    }
+    tft.setTextDatum(MC_DATUM);
+    tft.setTextSize(2);
+    String text = "Batery: " + String(bateryLevel);
+    tft.drawString(text, 20, 60);
 }
 
 
