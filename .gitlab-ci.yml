@@ -62,6 +62,10 @@ verify:
     - npm init -y
     - npm install
     - node server.cjs send
+    - echo "Checking web-server"
+    - node web-server.cjs check
+    - echo "Checking authentication server"
+    - node auth-server.cjs check
 
   only:
     - merge_requests

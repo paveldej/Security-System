@@ -1,0 +1,77 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #F1F3F4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    min-height: 100vh;
+    padding-top: 100px;
+  }
+  
+  .login-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 30px;
+  }
+  
+  input {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem;
+    width: 100%;
+  }
+  
+  button {
+    background-color: #d5f4ef;
+    border: none;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  /* Funny warning styles */
+  .warning-box {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .warning-img {
+    width: 150px;
+    height: auto;
+  }
+  
+  .speech-bubble {
+    background: #fff;
+    border: 2px solid #b00020;
+    color: #b00020;
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 300px;
+  }
+  
+  .speech-bubble::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    border: 10px solid transparent;
+    border-bottom-color: #fff;
+  }
+  
