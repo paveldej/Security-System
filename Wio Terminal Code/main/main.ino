@@ -3,7 +3,7 @@
 #include <SparkFunBQ27441.h>
 #include "Logger.h"
 #include <TimeLib.h>
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> 
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 
@@ -12,6 +12,14 @@
 #include "display.h"
 #include "buttons.h"
 
+#define WIFI_TIMEOUT 5            //Retry after a certain amount of seconds
+#define SERVER_PORT 1883          //MQTT server port 
+#define MANUAL_TRIGGER_DURATION 5 //how long the manual trigger should last in seconds
+#define TRIGGER_DURATION 30       //how long the non-manual trigger should last in seconds
+#define DETECTION_RANGE 40        //distance that the ultrasonic sensor detects as trigger in centimeters
+#define DETECTION_DURATION 15000  //how long we should be within the decetion range for triggering in milliseconds
+#define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
+#define BATTERY_CAPACITY 650      //Preset battery capacity
 
 extern std::vector<String> mainMenuOptions;
 extern ScreenState screen;
@@ -22,14 +30,14 @@ extern String passwordInput;
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
-const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
-const char *subTopic2 = "Status/getStatus";
+const char *setStatus = "Status/setStatus";  // Topic to subcribe to
+const char *getStatus = "Status/getStatus";
 const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle manual triggers,
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
-// const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+//const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
@@ -45,10 +53,6 @@ AlarmTrigger alarmTrigger;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
 Logger logger("/log.json");
-
-
-
-const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
 void setupBattery(void)
 {
@@ -102,9 +106,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Serial.println(triggerMessage);
       //would make sense to have a bool here considering it should always trigger no matter the trigger message
       if (triggerMessage == "trigger") {
-        client.publish("Status/getTrigger","trigger");
-        alarmTrigger.triggerAlarmManual(5);
-        client.publish("Status/getTrigger","notrigger");
+        client.publish(getTrigger,"trigger");
+        alarmTrigger.triggerAlarmManual(MANUAL_TRIGGER_DURATION);
+        client.publish(getTrigger,"notrigger");
     }
   }
   else if(String(topic) == "requestLogs"){
@@ -118,9 +122,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void connectToWiFi() {
   start = millis();
-  while (!Serial && millis() - start < 5000) 
-    ; // Wait for Serial to be ready or time out after 5 seconds, 
-      //this is essentail, because if the device is not connected (running off the battery), it will wait forever
+  while (!Serial && millis() - start < WIFI_TIMEOUT) 
+    ; // Wait for Serial to be ready or time out after a certain amount of seconds, 
+      //this is essential, because if the device is not connected (running off the battery), it will wait forever
   Serial.print("Attempting to connect to SSID: ");
   Serial.println(ssids[selectedSSID]);
   WiFi.begin(ssids[selectedSSID].c_str(), passwordInput.c_str());
@@ -143,13 +147,13 @@ void reconnect() {
     if (client.connect(ID)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(subTopic2, "{\"message\": \"Wio Terminal is connected!\"}");
+      client.publish(getStatus, "{\"message\": \"Wio Terminal is connected!\"}");
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
-      client.subscribe(subTopic1);
+      client.subscribe(setStatus);
       client.subscribe(setTrigger);
       Serial.print("Subcribed to: ");
-      Serial.println(subTopic1);
+      Serial.println(setStatus);
       Serial.println(setTrigger);
       client.subscribe(requestLogs);
       updateStatusOnPageLoad();
@@ -174,7 +178,7 @@ void setupTime(){
   setTime(timeClient.getEpochTime());
 }
 void setupMQTT() {
-  client.setServer(server, 1883);
+  client.setServer(server, SERVER_PORT);
   client.setCallback(callback); 
 }
 
@@ -184,11 +188,11 @@ void updateStatus()
   {
     if (armed == true){
       client.publish("Status/sendEmail","Armed");
-      client.publish(subTopic2, "arm");
+      client.publish(getStatus, "arm");
        logger.log("Status","Armed");
     } else {
       client.publish("Status/sendEmail","Disarmed");
-      client.publish(subTopic2, "disarm");
+      client.publish(getStatus, "disarm");
        logger.log("Status","Disarmed");
     }
   }
@@ -198,9 +202,9 @@ void updateStatusOnPageLoad()
 {
   {
     if (armed == true){
-      client.publish(subTopic2, "arm");
+      client.publish(getStatus, "arm");
     } else {
-      client.publish(subTopic2, "disarm");
+      client.publish(getStatus, "disarm");
     }
   }
 }
@@ -257,7 +261,7 @@ void loop()
   }
   
   // send battery info every n/1000 seconds
-  if (millis() - updateBatteryPeriod >= 10000) {
+  if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
@@ -267,12 +271,12 @@ void loop()
     return;
   }
 
-  //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
-  if (alarmTrigger.objectIsClose(40)){
-    if(millis() - objectDetectedStart >= 15000) {
+  //we trigger it when its less than or equal to the detection range and it triggers for a certain trigger duration
+  if (alarmTrigger.objectIsClose(DETECTION_RANGE)){
+    if(millis() - objectDetectedStart >= DETECTION_DURATION) {
       client.publish(getTrigger, "trigger");
       Serial.println("Intruder alert published to MQTT!");
-     alarmTrigger.triggerAlarm(30);
+     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
      logger.log("Trigger","Intruder Detected");
      Serial.println("triggered");
     }
