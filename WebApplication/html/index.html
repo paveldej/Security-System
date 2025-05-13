@@ -9,7 +9,9 @@
   <link rel="icon" type="image/x-icon" href="../img/icon.svg" />
   <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
   <script>
-    const client = mqtt.connect('wss://test.mosquitto.org:8081');
+  //const client = mqtt.connect('wss://test.mosquitto.org:8081');
+  const client = mqtt.connect('wss://mqtt.eclipseprojects.io:443/mqtt');
+
   </script>
   <script src="../javascript/toggleAlarm.js"></script> 
   <script src="../javascript/triggerAlarmButton.js"></script>
@@ -17,6 +19,9 @@
 </head>
 
 <body>
+  <div id="batteryStatus" class="battery-status">
+    <span id="batteryPercentage">N\A</span>
+  </div>
   <div id="batteryAlert" class="alert-container">
     <div class="custom-alert">
       <span class="alert-text">🔋 <strong>Battery is low!</strong> Please check the power supply.</span>
