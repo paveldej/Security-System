@@ -29,6 +29,7 @@ void drawConnecting(const String& ssid);
 void drawConnected(const String& ssid);
 void drawStatus(bool armed);
 void drawConnectionStatus();
+void drawBatteryLevel(byte bateryLevel);
 
 std::map<ScreenState, ScreenHandler> screenHandlers = {
   { MAIN_MENU, handleMainMenu },
