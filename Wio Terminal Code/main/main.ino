@@ -217,7 +217,8 @@ void loop()
   client.loop();
 
   //calling displaying alarm state functionality from TerminalDisplay
-  TerminalDisplay::displayStatus(armed);
+  drawStatus(armed);
+  Serial.println(armed);
   
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= 10000) {
