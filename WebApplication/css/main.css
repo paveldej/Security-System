@@ -1,33 +1,33 @@
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #F1F3F4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  .card {
-    width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    border: none;
-  }
-  .status-indicator {
-    font-size: 1.25rem;
-    font-weight: bold;
-  }
- 
+  font-family: 'Roboto', sans-serif;
+  background-color: #F1F3F4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  border: none;
+}
+.status-indicator {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
 /* Alert Styling */
 .alert-container {
   width: 100%;
   position: fixed;
-  top: -100px;
+  top: -100px; /* Start off-screen */
   left: 0;
   z-index: 9999;
   display: flex;
   justify-content: center;
-  transition: top 0.6s ease-in-out;
+  transition: top 0.6s ease-in-out; /* Smooth transition to bring alert on screen */
 }
 
 .custom-alert {
@@ -72,7 +72,6 @@ body {
   box-shadow: 0 0 8px #28a745;
 }
 
-/* Intrusion Alert Overriding */
 .intrusion-alert {
   top: -150px; /* Initially hidden */
   background-color: #ff4444;
@@ -91,4 +90,17 @@ body {
 
 .intrusion-alert .dismiss-btn {
   color: white;
+}
+
+.battery-status {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);  
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1000; 
 }
