@@ -1,6 +1,12 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
 #include <SparkFunBQ27441.h>
+#include "Logger.h"
+#include <TimeLib.h>
+#include <ArduinoJson.h>
+#include <WiFiUdp.h>
+#include <NTPClient.h>
+
 #include <vector>
 #include "AlarmTrigger.h"
 #include "display.h"
@@ -35,6 +41,11 @@ WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 
 AlarmTrigger alarmTrigger;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
+Logger logger("/log.json");
+
+
 
 const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
@@ -143,10 +154,19 @@ void reconnect() {
     }
   }
 }
+void setupTime(){
+    timeClient.begin();
 
+  while (!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+
+  // Set system time using TimeLib
+  setTime(timeClient.getEpochTime());
+}
 void setupMQTT() {
   client.setServer(server, 1883);
-  client.setCallback(callback);
+  client.setCallback(callback); 
 }
 
 //send battery status via mqtt
@@ -191,7 +211,6 @@ void setup()
   initializeDisplay();
   initializeButtons();
   drawMainMenu(mainMenuOptions,0);
-  
   armed = true;
   //creating an AlarmTrigger object
   alarmTrigger = AlarmTrigger();
@@ -201,7 +220,7 @@ void setup()
 
 unsigned long updateBatteryPeriod = millis();
 unsigned long objectDetectedStart = millis();
-
+bool flag = false;
 void loop()
 {
   handleScreen(screen);
@@ -213,6 +232,11 @@ void loop()
 
   if (!client.connected()) {
     reconnect();
+  }
+  if (flag == false){
+      setupTime();  
+      logger.begin();
+      flag = true;
   }
   client.loop();
 
@@ -226,6 +250,7 @@ void loop()
     updateBattery();
     updateBatteryPeriod = millis();
   }
+    logger.publish(client);
 
   if (armed == false){
     objectDetectedStart = millis();
@@ -237,7 +262,9 @@ void loop()
     if(millis() - objectDetectedStart >= 15000) {
       client.publish(getTrigger, "trigger");
       Serial.println("Intruder alert published to MQTT!");
-      alarmTrigger.triggerAlarm(30);
+     alarmTrigger.triggerAlarm(30);
+     logger.log("Trigger","Intruder Detected");
+     Serial.println("triggered");
     }
   } else {
     objectDetectedStart = millis();
