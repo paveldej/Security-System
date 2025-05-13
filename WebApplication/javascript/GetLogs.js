@@ -1,11 +1,11 @@
-let logs; 
+let logs = [];
+
 function GetLogs(logs) {
   if (typeof window === 'undefined') {
-    // Node.js environment
+    // Node.js
     console.log("The button works");
     console.log(logs || "No logs received yet");
-
-    if (logs && logs !== "[]") {
+    if (logs && logs.length > 0) {
       console.log("LOGS:");
       console.log(logs);
       return logs;
@@ -15,14 +15,23 @@ function GetLogs(logs) {
       return msg;
     }
   } else {
-    // Browser environment
+    // Browser
     console.log("The button works");
     console.log(logs || "No logs received yet");
 
-    if (logs && logs !== "[]") {
+    if (logs && logs.length > 0) {
       const modal = new bootstrap.Modal(document.getElementById('logsModal'));
       const logsContent = document.getElementById('logsContent');
-      logsContent.textContent = logs;
+
+      let formattedLogs = logs.map(log => {
+        try {
+          return JSON.stringify(JSON.parse(log), null, 2);
+        } catch (e) {
+          return log.toString();
+        }
+      }).join('<hr>');
+
+      logsContent.innerHTML = `<pre>${formattedLogs}</pre>`;
       modal.show();
       return logs;
     } else {
@@ -32,10 +41,26 @@ function GetLogs(logs) {
   }
 }
 
-// Only run browser-specific logic in browser
+function sendlogRequest() {
+  client.publish('requestLogs', 'getLogs');
+}
+
+// Browser setup
 if (typeof window !== 'undefined') {
   document.addEventListener("DOMContentLoaded", function () {
     const GetLogsButton = document.getElementById("GetLogs");
+
+    // Ensure logs are cleared each time the button is clicked
+    GetLogsButton.addEventListener('click', function () {
+      logs = [];
+      sendlogRequest();
+
+      setTimeout(() => {
+        console.log("Clicked. Logs value:", logs);
+        GetLogs(logs);
+      }, 1000); 
+    });
+
     client.on('connect', () => {
       client.subscribe('GetLogs', (err) => {
         if (!err) {
@@ -46,14 +71,10 @@ if (typeof window !== 'undefined') {
 
     client.on('message', function (topic, message) {
       if (topic === 'GetLogs') {
-        console.log("Logs received: ", message.toString());
-        logs = message.toString();
+        const logStr = message.toString();
+        console.log("Logs received: ", logStr);
+        logs.push(logStr);
       }
-    });
-
-    GetLogsButton.addEventListener('click', function () {
-      console.log("Clicked. Logs value:", logs); 
-      GetLogs(logs);
     });
   });
 }

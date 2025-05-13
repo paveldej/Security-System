@@ -10,7 +10,7 @@ client.on('connect', () => {
   client.subscribe('Status/getStatus', (err) => {
     if (!err) {
       console.log('Subscribed to topic: getStatus');
-      client.publish('Status/setStatus', 'status');
+      client.publish('requestLogs', 'getLogs');
     }
   });
 });

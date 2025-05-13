@@ -62,29 +62,41 @@ String Logger::formatDate(time_t t) {
 
 // Publish latest log via MQTT
 void Logger::publish(PubSubClient& client) {
+  if (!client.connected()) {
+    Serial.println("MQTT client not connected.");
+    return;
+  }
+
   File logFile = SD.open(_filePath, FILE_READ);
   if (!logFile) {
     Serial.println("Failed to open log file for reading!");
     return;
   }
 
-  String allLogs = "[";  // Start the JSON array
-
-  bool first = true;
   while (logFile.available()) {
     String line = logFile.readStringUntil('\n');
-    line.trim(); // Remove any trailing whitespace
+    line.trim();  // Remove leading/trailing whitespace
+
     if (line.length() == 0) continue;  // Skip empty lines
 
-    // Add commas between JSON objects
-    if (!first) allLogs += ",";
-    allLogs += line;  // Add the log entry to the JSON array
-    first = false;  // Only add commas after the first entry
+    // Optionally validate that line is a valid JSON string
+    StaticJsonDocument<256> doc;
+    DeserializationError error = deserializeJson(doc, line);
+    if (error) {
+      Serial.println("Invalid JSON in log, skipping:");
+      Serial.println(line);
+      continue;
+    }
+
+    // Publish and delay to avoid flooding
+    bool success = client.publish("GetLogs", line.c_str());
+    if (!success) {
+      Serial.println("Failed to publish log line.");
+    }
+
+    delay(10);  // Small delay to avoid flooding the broker
   }
 
-  allLogs += "]";  // Close the JSON array
-  logFile.close();  // Close the file after reading
-
-  // Publish the logs over MQTT
-  client.publish("GetLogs", allLogs.c_str());
+  logFile.close();
+  Serial.println("All logs published.");
 }

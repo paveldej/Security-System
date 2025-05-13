@@ -34,6 +34,7 @@ const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
 const char *subTopic2 = "Status/getStatus";
 const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle manual triggers,
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
+const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
 const char *server = "test.mosquitto.org"; // Server URL
 // const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
@@ -110,6 +111,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
         client.publish(getTrigger,"notrigger");
     }
   }
+  else if(String(topic) == "requestLogs"){
+    receivedMessage = "";
+      for (int i = 0; i < length; i++) { 
+        receivedMessage += (char)payload[i];
+        } // Append each character to the string
+        logger.publish(client);
+  }
 }
 
 void connectToWiFi() {
@@ -147,6 +155,7 @@ void reconnect() {
       Serial.print("Subcribed to: ");
       Serial.println(subTopic1);
       Serial.println(setTrigger);
+      client.subscribe(requestLogs);
       updateStatusOnPageLoad();
     }
     else {
@@ -180,9 +189,11 @@ void updateStatus()
     if (armed == true){
       client.publish("Status/sendEmail","Armed");
       client.publish(subTopic2, "arm");
+       logger.log("Status","Armed");
     } else {
       client.publish("Status/sendEmail","Disarmed");
       client.publish(subTopic2, "disarm");
+       logger.log("Status","Disarmed");
     }
   }
 }
@@ -254,7 +265,6 @@ void loop()
     updateBattery();
     updateBatteryPeriod = millis();
   }
-    logger.publish(client);
 
   if (armed == false){
     objectDetectedStart = millis();
