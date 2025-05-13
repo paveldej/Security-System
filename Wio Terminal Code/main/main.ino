@@ -217,7 +217,9 @@ void loop()
   client.loop();
 
   //calling displaying alarm state functionality from TerminalDisplay
-  drawStatus(armed);
+  if (screen==MAIN_MENU){
+    drawStatus(armed);
+  }
   Serial.println(armed);
   
   // send battery info every n/1000 seconds
