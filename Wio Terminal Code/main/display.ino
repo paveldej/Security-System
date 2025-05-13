@@ -3,6 +3,8 @@
 #include "keyboard.h"
 #include "rpcWiFi.h"
 
+extern PubSubClient client;
+extern bool armed;
 
 TFT_eSPI tft;
 // current screen frame to display
@@ -25,6 +27,9 @@ std::vector<String> ssids;
 int selectedSSID = 0;
 int ssidCount = 0;
 
+bool prevStatus = armed;
+bool prevIsConnected = isOnline();
+
 extern const char** keyboard;
 
 void initializeDisplay() {
@@ -36,8 +41,9 @@ void initializeDisplay() {
 void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
   // you can paste your code to display general information here:
   // Empty space available from 0 to 160th pixel.
-  tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
+  tft.fillScreen(TFT_BLACK);
+
   tft.setTextColor(TFT_WHITE);
 
   tft.setCursor(10, 180);
@@ -48,6 +54,7 @@ void drawMainMenu(const std::vector<String>& mainMenuOptions, int selected) {
   tft.setTextColor(TFT_BLACK);
   tft.print("<< "+ mainMenuOptions[selected] + " >>");
 }
+
 
 void drawWiFiList(const std::vector<String>& ssids, int selected) {
   const int itemsPerPage = 7;
@@ -148,6 +155,8 @@ void handleScreen(ScreenState screen) {
 }
 
 void handleMainMenu() {
+  drawConnectionStatus();
+  drawStatus(armed);
   if (readButton() == LEFT) {
     selectedMainOption = (selectedMainOption - 1 + mainOptionCount) % mainOptionCount;
     drawMainMenu(mainMenuOptions, selectedMainOption);
@@ -300,21 +309,41 @@ void handleConnectionFailed() {
 }
 
 void drawStatus(bool armed) {
-
+  if (prevStatus != armed) {
+    tft.fillRect(20,40,320,60,TFT_BLACK);
+    prevStatus = armed;
+  }
   String status = "Armed";
-    //sets armed or disarmed with differing colors
-    if (armed){
-      status = "Armed";
-      tft.setTextColor(TFT_RED, TFT_BLACK);
-    } else {
-      status = "Disarmed";
-      tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    }
-    tft.setTextDatum(MC_DATUM);
-    tft.setTextSize(2);
-    tft.drawString(status, 20, 40);
+  //sets armed or disarmed with differing colors
+  if (armed){
+    status = "Armed";
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+  } else {
+    status = "Disarmed";
+    tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  }
+  tft.setTextSize(2);
+  tft.drawString(status, 20, 40);
 }
 
+void drawConnectionStatus() {
+  bool isConnected = isOnline();
+  if (prevIsConnected != isConnected) {
+    tft.fillRect(20,0,320,40,TFT_BLACK);
+    prevIsConnected = isConnected;
+  }
+  tft.setTextSize(2);
+  if (isConnected) {
+    tft.setTextColor(TFT_GREEN, TFT_BLACK);
+    tft.drawString("Online", 20, 5);
+  } else {
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.drawString("Offline", 20, 5);
+  }
+}
 
+bool isOnline() {
+  return client.connected() && WiFi.isConnected() ? true : false; 
+}
 
 

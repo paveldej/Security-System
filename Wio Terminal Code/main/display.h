@@ -28,6 +28,7 @@ void drawKeyboard(const char** layout, int row, int col);
 void drawConnecting(const String& ssid);
 void drawConnected(const String& ssid);
 void drawStatus(bool armed);
+void drawConnectionStatus();
 
 std::map<ScreenState, ScreenHandler> screenHandlers = {
   { MAIN_MENU, handleMainMenu },

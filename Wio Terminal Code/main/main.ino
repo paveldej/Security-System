@@ -140,7 +140,7 @@ void connectToWiFi() {
 
 void reconnect() {
   // Loop until we're reconnected
-  while (!client.connected())
+  while (!client.connected() && WiFi.isConnected())
   {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
@@ -255,11 +255,6 @@ void loop()
   }
   client.loop();
 
-  //calling displaying alarm state functionality from display.h
-  if (screen==MAIN_MENU){
-    drawStatus(armed);
-  }
-  
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
