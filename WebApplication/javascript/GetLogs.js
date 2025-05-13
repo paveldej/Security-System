@@ -1,23 +1,25 @@
+let logs; 
 function GetLogs(logs) {
   if (typeof window === 'undefined') {
     // Node.js environment
     console.log("The button works");
     console.log(logs || "No logs received yet");
 
-    if (logs) {
+    if (logs && logs !== "[]") {
       console.log("LOGS:");
       console.log(logs);
       return logs;
     } else {
-      console.log("No logs available yet.");
-      return "No logs available yet.";
+      const msg = "No logs available yet.";
+      console.log(msg);
+      return msg;
     }
   } else {
     // Browser environment
     console.log("The button works");
     console.log(logs || "No logs received yet");
 
-    if (logs) {
+    if (logs && logs !== "[]") {
       const modal = new bootstrap.Modal(document.getElementById('logsModal'));
       const logsContent = document.getElementById('logsContent');
       logsContent.textContent = logs;
@@ -33,7 +35,6 @@ function GetLogs(logs) {
 // Only run browser-specific logic in browser
 if (typeof window !== 'undefined') {
   document.addEventListener("DOMContentLoaded", function () {
-    let logs;
     const GetLogsButton = document.getElementById("GetLogs");
     client.on('connect', () => {
       client.subscribe('GetLogs', (err) => {
@@ -51,6 +52,7 @@ if (typeof window !== 'undefined') {
     });
 
     GetLogsButton.addEventListener('click', function () {
+      console.log("Clicked. Logs value:", logs); 
       GetLogs(logs);
     });
   });
