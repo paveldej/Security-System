@@ -3,7 +3,7 @@
 #include <SparkFunBQ27441.h>
 #include "Logger.h"
 #include <TimeLib.h>
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> 
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 
@@ -30,14 +30,14 @@ extern String passwordInput;
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
-const char *subTopic1 = "Status/setStatus";  // Topic to subcribe to
-const char *subTopic2 = "Status/getStatus";
+const char *setStatus = "Status/setStatus";  // Topic to subcribe to
+const char *getStatus = "Status/getStatus";
 const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle manual triggers,
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
-const char *server = "test.mosquitto.org"; // Server URL
-// const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+//const char *server = "test.mosquitto.org"; // Server URL
+const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
@@ -147,13 +147,13 @@ void reconnect() {
     if (client.connect(ID)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(subTopic2, "{\"message\": \"Wio Terminal is connected!\"}");
+      client.publish(getStatus, "{\"message\": \"Wio Terminal is connected!\"}");
       Serial.println("Published connection message successfully!");
       // ... and resubscribe
-      client.subscribe(subTopic1);
+      client.subscribe(setStatus);
       client.subscribe(setTrigger);
       Serial.print("Subcribed to: ");
-      Serial.println(subTopic1);
+      Serial.println(setStatus);
       Serial.println(setTrigger);
       client.subscribe(requestLogs);
       updateStatusOnPageLoad();
@@ -188,11 +188,11 @@ void updateStatus()
   {
     if (armed == true){
       client.publish("Status/sendEmail","Armed");
-      client.publish(subTopic2, "arm");
+      client.publish(getStatus, "arm");
        logger.log("Status","Armed");
     } else {
       client.publish("Status/sendEmail","Disarmed");
-      client.publish(subTopic2, "disarm");
+      client.publish(getStatus, "disarm");
        logger.log("Status","Disarmed");
     }
   }
@@ -202,9 +202,9 @@ void updateStatusOnPageLoad()
 {
   {
     if (armed == true){
-      client.publish(subTopic2, "arm");
+      client.publish(getStatus, "arm");
     } else {
-      client.publish(subTopic2, "disarm");
+      client.publish(getStatus, "disarm");
     }
   }
 }
