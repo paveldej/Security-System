@@ -5,9 +5,12 @@
 #include "Ultrasonic.h"
 #include "pins.h"
 
+#define LED_BLINK_RATE 500 // delay between blinks in milliseconds
+
 
 ChainableLED leds(RGB_LED_DI_PIN, RGB_LED_CI_PIN, 1);
 Ultrasonic ultrasonicSensor(ULTRASONIC_PIN);
+unsigned long distance;
 
 //constructor
 AlarmTrigger::AlarmTrigger() {
@@ -37,7 +40,7 @@ void AlarmTrigger::stopAlarmSound() {
 
 bool AlarmTrigger::objectIsClose(long threshold) {
 
-  long distance = ultrasonicSensor.MeasureInCentimeters();
+  distance = ultrasonicSensor.MeasureInCentimeters();
 
   if (distance <= threshold) {
     return true;
@@ -50,7 +53,6 @@ bool AlarmTrigger::objectIsClose(long threshold) {
 //the seconds denote how long should the alarm be triggered
 void AlarmTrigger::triggerAlarm(int seconds) {
 
-  int blinkRate = 500;
   unsigned long startTime = millis();
 
   alarmTrigger.playAlarmSound();
@@ -64,7 +66,7 @@ void AlarmTrigger::triggerAlarm(int seconds) {
 
     unsigned long current = millis();
 
-    if ((current / blinkRate) % 2 == 0) {
+    if ((current / LED_BLINK_RATE) % 2 == 0) {
       leds.setColorRGB(0, 50, 0, 0);  // red
     } else {
       leds.setColorRGB(0, 0, 0, 0);  // off
@@ -83,7 +85,6 @@ void AlarmTrigger::triggerAlarm(int seconds) {
 }
 void AlarmTrigger::triggerAlarmManual(int seconds) {
 
-  int blinkRate = 500;
   unsigned long startTime = millis();
 
   alarmTrigger.playAlarmSound();
@@ -97,13 +98,11 @@ void AlarmTrigger::triggerAlarmManual(int seconds) {
 
     unsigned long current = millis();
 
-    if ((current / blinkRate) % 2 == 0) {
+    if ((current / LED_BLINK_RATE) % 2 == 0) {
       leds.setColorRGB(0, 50, 0, 0);  // red
     } else {
       leds.setColorRGB(0, 0, 0, 0);  // off
     }
-
-    //check for user setting alarm to disarmed while alarm triggered
   }
 
   alarmTrigger.turnLightGreen();
