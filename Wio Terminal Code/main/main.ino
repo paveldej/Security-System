@@ -12,6 +12,14 @@
 #include "display.h"
 #include "buttons.h"
 
+#define WIFI_TIMEOUT 5            //Retry after a certain amount of seconds
+#define SERVER_PORT 1883          //MQTT server port 
+#define MANUAL_TRIGGER_DURATION 5 //how long the manual trigger should last in seconds
+#define TRIGGER_DURATION 30       //how long the non-manual trigger should last in seconds
+#define DETECTION_RANGE 40        //distance that the ultrasonic sensor detects as trigger in centimeters
+#define DETECTION_DURATION 15000  //how long we should be within the decetion range for triggering in milliseconds
+#define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
+#define BATTERY_CAPACITY 650      //Preset battery capacity
 
 extern std::vector<String> mainMenuOptions;
 extern ScreenState screen;
@@ -44,10 +52,6 @@ AlarmTrigger alarmTrigger;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
 Logger logger("/log.json");
-
-
-
-const unsigned int BATTERY_CAPACITY = 650; // Set Wio Terminal Battery's Capacity 
 
 void setupBattery(void)
 {
@@ -101,18 +105,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Serial.println(triggerMessage);
       //would make sense to have a bool here considering it should always trigger no matter the trigger message
       if (triggerMessage == "trigger") {
-        client.publish("Status/getTrigger","trigger");
-        alarmTrigger.triggerAlarmManual(5);
-        client.publish("Status/getTrigger","notrigger");
+        client.publish(getTrigger,"trigger");
+        alarmTrigger.triggerAlarmManual(MANUAL_TRIGGER_DURATION);
+        client.publish(getTrigger,"notrigger");
     }
   }
 }
 
 void connectToWiFi() {
   start = millis();
-  while (!Serial && millis() - start < 5000) 
-    ; // Wait for Serial to be ready or time out after 5 seconds, 
-      //this is essentail, because if the device is not connected (running off the battery), it will wait forever
+  while (!Serial && millis() - start < WIFI_TIMEOUT) 
+    ; // Wait for Serial to be ready or time out after a certain amount of seconds, 
+      //this is essential, because if the device is not connected (running off the battery), it will wait forever
   Serial.print("Attempting to connect to SSID: ");
   Serial.println(ssids[selectedSSID]);
   WiFi.begin(ssids[selectedSSID].c_str(), passwordInput.c_str());
@@ -165,7 +169,7 @@ void setupTime(){
   setTime(timeClient.getEpochTime());
 }
 void setupMQTT() {
-  client.setServer(server, 1883);
+  client.setServer(server, SERVER_PORT);
   client.setCallback(callback); 
 }
 
@@ -246,7 +250,7 @@ void loop()
   }
   
   // send battery info every n/1000 seconds
-  if (millis() - updateBatteryPeriod >= 10000) {
+  if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
@@ -257,12 +261,12 @@ void loop()
     return;
   }
 
-  //we trigger it when its less than or equal to 150 cms and it triggers for 30 seconds
-  if (alarmTrigger.objectIsClose(40)){
-    if(millis() - objectDetectedStart >= 15000) {
+  //we trigger it when its less than or equal to the detection range and it triggers for a certain trigger duration
+  if (alarmTrigger.objectIsClose(DETECTION_RANGE)){
+    if(millis() - objectDetectedStart >= DETECTION_DURATION) {
       client.publish(getTrigger, "trigger");
       Serial.println("Intruder alert published to MQTT!");
-     alarmTrigger.triggerAlarm(30);
+     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
      logger.log("Trigger","Intruder Detected");
      Serial.println("triggered");
     }
