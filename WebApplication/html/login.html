@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="icon" type="image/x-icon" href="../img/icon.svg" />
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+  <link rel="stylesheet" href="../css/login.css" />
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="card text-center login-card">
+      <h3>Login to Pavel Security System</h3>
+      <input type="email" id="email" required placeholder="Email" class="form-control my-2">
+      <input type="password" id="password" required placeholder="Password" class="form-control my-2">
+      <button onclick="login()" class="btn btn-primary">Login</button>
+      <p id="loginError" class="text-danger mt-2"></p>
+    </div>
+
+    <!-- Pavel's funny warning section -->
+    <div id="funnyWarning" class="warning-box" style="display: none;">
+      <img src="../img/icon.svg" alt="Warning Icon" class="warning-img" />
+      <div class="speech-bubble">
+        Trying to enter my security system illegally... huh??!!
+      </div>
+    </div>
+  </div>
+
+  <script src="../javascript/login.js"></script>
+</body>
+</html>

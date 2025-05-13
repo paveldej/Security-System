@@ -12,6 +12,11 @@ app.use(express.json());
 
 let isEmailSent = false;
 
+const subscribers = [
+  "filqwerty987@gmail.com",
+  // Add more subscriber emails here
+];
+
 app.post('/send-email', async (req, res) => {
   const { to, subject, text } = req.body;
 
@@ -23,7 +28,7 @@ app.post('/send-email', async (req, res) => {
     res.status(500).send({ success: false, message: 'Failed to send email' });
   }
 });
-
+//Sends email to one person
 async function sendEmail(to, subject, text) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -39,6 +44,18 @@ async function sendEmail(to, subject, text) {
     subject,
     text,
   });
+}
+
+//sends email to entire subscriber list
+async function sendEmailToSubs(subject, text) {
+  for (const email of subscribers) {
+    try {
+      await sendEmail(email, subject, text);
+      console.log(`Email sent to ${email}`);
+    } catch (err) {
+      console.error(`Failed to send email to ${email}:`, err);
+    }
+  }
 }
 
 client.on('connect', () => {
@@ -66,8 +83,7 @@ client.on('message', async (topic, message) => {
 
         if (batteryLevel < 20) {
           if (!isEmailSent) {
-            await sendEmail(
-              "filqwerty987@gmail.com",
+            await sendEmailToSubs(
               "Battery Level Is Low",
               "The battery level is below 20%. Please check the power supply."
             );
@@ -81,9 +97,7 @@ client.on('message', async (topic, message) => {
       case 'Status/sendEmail':
         console.log(msg);
         if (msg === "Armed" || msg === "Disarmed") {
-          await sendEmail(
-            //make it a variable plsssssss
-            "filqwerty987@gmail.com",
+          await sendEmailToSubs(
             "The system status is " + msg,
             "The system status has been changed to: " + msg
           );
@@ -95,8 +109,7 @@ client.on('message', async (topic, message) => {
       case 'Status/getTrigger':
         if (msg === 'trigger') {
           console.log("Intrusion Detected!");
-          await sendEmail(
-            "filqwerty987@gmail.com",
+          await sendEmailToSubs(
             "Intrusion Alert Detected",
             "A possible intrusion was detected by the alarm system. Please check your premises immediately."
           );
