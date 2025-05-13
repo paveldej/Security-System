@@ -239,7 +239,11 @@ void loop()
       flag = true;
   }
   client.loop();
-  //logger.log("Trigger","Intruder Detected");
+
+  //calling displaying alarm state functionality from display.h
+  if (screen==MAIN_MENU){
+    drawStatus(armed);
+  }
   
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= 10000) {
