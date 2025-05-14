@@ -14,7 +14,7 @@
 #define MIC_IDLE 512  //value for "silence"
 #define MIC_MAX_DEVIATION 512 //max deviation from 512 towards 0 and 1023
 
-#define SOUND_NORMALIZED_WEIGHT 1.5
+#define SOUND_NORMALIZED_WEIGHT 2 //weight for alarm trigger formula
 #define DISTANCE_NORMALIZED_WEIGHT 1
 
 
