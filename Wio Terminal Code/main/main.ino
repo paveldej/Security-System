@@ -16,7 +16,7 @@
 #define SERVER_PORT 1883          //MQTT server port 
 #define MANUAL_TRIGGER_DURATION 5 //how long the manual trigger should last in seconds
 #define TRIGGER_DURATION 30       //how long the non-manual trigger should last in seconds
-#define TRIGGER_THRESHOLD 1.5     // the sum of normalized distance and sound value that is needed for alarm triggers
+#define TRIGGER_THRESHOLD 1     // the sum of normalized distance and sound value that is needed for alarm triggers
 #define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
 #define BATTERY_CAPACITY 650      //Preset battery capacity
 
@@ -35,8 +35,8 @@ const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle m
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
-const char *server = "test.mosquitto.org"; // Server URL
-//const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+//const char *server = "test.mosquitto.org"; // Server URL
+const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
@@ -236,6 +236,7 @@ void setup()
 unsigned long updateBatteryPeriod = millis();
 bool flag = false;
 
+
 void loop()
 {
   batteryLevel = lipo.soc();
@@ -249,31 +250,26 @@ void loop()
   if (!client.connected()) {
     reconnect();
   }
+  client.loop();
 
-  if (armed == false){
-   return;
+  if(armed == false){
+    return;
+    
   }
+  
   if (flag == false){
       setupTime();  
       logger.begin();
       flag = true;
   }
-  client.loop();
 
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
-
-
-
-
-  float distance = alarmTrigger.getNormalizedDistance();
-  float volume = alarmTrigger.getNormalizedVolume();
-
- 
-  if(distance + volume >= TRIGGER_THRESHOLD) {
+  Serial.println(alarmTrigger.getNormalizedVolume());
+  if(alarmTrigger.getNormalizedDistance() + alarmTrigger.getNormalizedVolume() >= TRIGGER_THRESHOLD) {
     client.publish(getTrigger, "trigger");
     Serial.println("Intruder alert published to MQTT!");
     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
