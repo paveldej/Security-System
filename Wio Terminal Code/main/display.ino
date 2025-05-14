@@ -351,7 +351,7 @@ bool isOnline() {
 }
 
 void drawBatteryLevel(byte bateryLevel){
-  if (countDigits(prevBatteryLevel) < countDigits(batteryLevel)) {
+  if (countDigits(prevBatteryLevel) != countDigits(batteryLevel)) {
     tft.fillRect(20, 60, 320, 80, TFT_BLACK);
     prevBatteryLevel = batteryLevel;
   }
