@@ -5,5 +5,5 @@
 #define RGB_LED_CI_PIN 3
 #define BUZZER_PIN 4
 #define ULTRASONIC_PIN D0
-
+#define LOUDNESS_SENSOR_PIN 6
 #endif
