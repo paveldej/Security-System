@@ -8,6 +8,13 @@
 #define LED_BLINK_RATE 500 // delay between blinks in milliseconds
 
 
+#define MAX_DISTANCE_CM 200.0 
+#define MIN_DISTANCE_CM 0.0
+
+#define MIC_IDLE 512  //value for "silence"
+#define MIC_MAX_DEVIATION 512 //max deviation from 512 towards 0 and 1023
+
+
 ChainableLED leds(RGB_LED_DI_PIN, RGB_LED_CI_PIN, 1);
 Ultrasonic ultrasonicSensor(ULTRASONIC_PIN);
 unsigned long distance;
@@ -107,4 +114,22 @@ void AlarmTrigger::triggerAlarmManual(int seconds) {
 
   alarmTrigger.turnLightGreen();
   alarmTrigger.stopAlarmSound();
+}
+float AlarmTrigger::getNormalizedDistance() {
+  float distance = ultrasonicSensor.MeasureInCentimeters();
+
+  // Clamp between min and max distance
+  distance = constrain(distance, MIN_DISTANCE_CM, MAX_DISTANCE_CM);
+
+  // normalize so closer to 0 cm away = closer to 1.0
+  float norm = 1.0 - ((distance - MIN_DISTANCE_CM) / (MAX_DISTANCE_CM - MIN_DISTANCE_CM));
+  return norm;
+}
+
+float AlarmTrigger::getNormalizedVolume() {
+  int raw = analogRead(WIO_MIC);
+  int deviation = abs(raw - MIC_IDLE);   // Deviation from silence 
+  float norm = (float)deviation / MIC_MAX_DEVIATION;
+  norm = constrain(norm, 0.0, 1.0);     
+  return norm;
 }
