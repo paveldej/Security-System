@@ -36,8 +36,8 @@ const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle m
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
-const char *server = "test.mosquitto.org"; // Server URL
-//const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
+// const char *server = "test.mosquitto.org"; // Server URL
+const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
 bool armed = true;
@@ -221,7 +221,7 @@ unsigned long objectDetectedStart = millis();
 bool flag = false;
 void loop()
 {
-  batteryLevel = lipo.soc();
+  batteryLevel = getBatteryLevel();
   handleScreen(screen);
 
   if (!WiFi.isConnected()) {

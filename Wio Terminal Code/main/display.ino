@@ -28,8 +28,10 @@ std::vector<String> ssids;
 int selectedSSID = 0;
 int ssidCount = 0;
 
+// needed to update ui backgroud to avoid glitches
 bool prevStatus = armed;
 bool prevIsConnected = isOnline();
+byte prevBatteryLevel = batteryLevel;
 
 extern const char** keyboard;
 
@@ -347,16 +349,34 @@ void drawConnectionStatus() {
 bool isOnline() {
   return client.connected() && WiFi.isConnected() ? true : false; 
 }
+
 void drawBatteryLevel(byte bateryLevel){
-      if (bateryLevel<20){
-      tft.setTextColor(TFT_RED, TFT_BLACK);
-    } else {
-      tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    }
-    tft.setTextDatum(MC_DATUM);
-    tft.setTextSize(2);
-    String text = "Batery: " + String(bateryLevel);
-    tft.drawString(text, 20, 60);
+  if (countDigits(prevBatteryLevel) < countDigits(batteryLevel)) {
+    tft.fillRect(20, 60, 320, 80, TFT_BLACK);
+    prevBatteryLevel = batteryLevel;
+  }
+  
+  if (bateryLevel<20){
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+  } else {
+    tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  }
+  tft.setTextSize(2);
+  String text = "Battery: " + String(bateryLevel) + "%";
+  tft.drawString(text, 20, 60);
+}
+
+byte countDigits(byte number) {
+  if (number == 0) {
+    return 1;
+  }
+  byte count = 0;
+  while(number != 0) {
+    number /= 10;
+    count ++;
+  }
+
+  return count;
 }
 
 
