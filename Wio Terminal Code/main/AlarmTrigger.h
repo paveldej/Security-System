@@ -10,5 +10,7 @@ class AlarmTrigger{
     bool objectIsClose(long threshold);
     void triggerAlarm(int seconds);
     void triggerAlarmManual(int seconds);
+    float getNormalizedDistance();
+    float getNormalizedVolume();
 };
 #endif
