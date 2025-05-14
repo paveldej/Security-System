@@ -242,8 +242,16 @@ void loop()
   handleScreen(screen);
 
 
+  if (!WiFi.isConnected()) {
+    return;
+  }
+
   if (!client.connected()) {
     reconnect();
+  }
+
+  if (armed == false){
+   return;
   }
   if (flag == false){
       setupTime();  
