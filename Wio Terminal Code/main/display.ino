@@ -6,6 +6,8 @@
 extern PubSubClient client;
 extern bool armed;
 extern byte batteryLevel;
+extern String pinInput;
+extern const String pin;
 
 TFT_eSPI tft;
 // current screen frame to display
@@ -15,11 +17,12 @@ ScreenState screen = MAIN_MENU;
 * needed to map main menu options to appropriate screen frames
 */
 const std::map<String, ScreenState> optionToScreen = {
-  {"connect to wifi", WIFI_LIST}
+  {"connect to wifi", WIFI_LIST},
+  {"arm/disarm system", PIN_ENTRY}
 };
 
 //for main menu
-std::vector<String> mainMenuOptions = {"connect to wifi"};
+std::vector<String> mainMenuOptions = {"connect to wifi", "arm/disarm system"};
 int selectedMainOption = 0;
 int mainOptionCount = mainMenuOptions.size();
 
@@ -32,6 +35,7 @@ bool prevStatus = armed;
 bool prevIsConnected = isOnline();
 
 extern const char** keyboard;
+extern const char* keyboardPinEntry[];
 
 void initializeDisplay() {
   tft.begin();
@@ -145,6 +149,45 @@ void drawFailed(const String& ssid) {
   tft.print("Fail to Connect" + ssid);
 }
 
+void drawPin(const String& pin) {
+  tft.fillRect(0, 0, 320, 40, TFT_DARKGREY);
+  tft.setTextColor(TFT_WHITE);
+  tft.setCursor(10, 10);
+  tft.setTextSize(2);
+  tft.print("PIN: " + pin);
+}
+
+void drawPinEntry(int row, int col) {
+  tft.fillRect(0, 40, 320, 200, TFT_BLACK);
+  tft.fillRect(0, 195, 320, 240, TFT_GREEN);
+  for (int r = 0; r < 4; r++) {
+    for (int c = 0; c < 3; c++) {
+      int x = c * 60 + 70;
+      int y = r * 35 + 50;
+      char ch = keyboardPinEntry[r][c];
+      if (r == row && c == col) {
+        tft.fillRect(x - 25, y - 10, 60, 35, TFT_BLUE);
+        tft.setTextColor(TFT_WHITE, TFT_BLUE);
+      } else {
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+      }
+      tft.setCursor(x, y);
+      tft.print(ch);
+    }
+  } 
+  tft.setCursor(10,200);
+  tft.setTextColor(TFT_BLACK, TFT_GREEN);
+  tft.print("\"UPRIGHT\"- confirm");
+}
+
+void drawWrongPin() {
+  tft.fillScreen(TFT_RED);
+  tft.setCursor(10, 100);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.print("Incorrect PIN!\nPlease try again");
+}
+
 /**
  * Handles the current screen frame based on the screen state.
  * Maps the given screen state to the appropriate handler function and executes it.
@@ -175,6 +218,9 @@ void handleMainMenu() {
     if (screen == WIFI_LIST) {
       scanNetworks();
       drawWiFiList(ssids, selectedSSID);
+    } else if(screen == PIN_ENTRY) {
+      drawPin(pinInput);
+      drawPinEntry(pinRow, pinCol);
     }
   }
 }
@@ -310,9 +356,80 @@ void handleConnectionFailed() {
   drawMainMenu(mainMenuOptions, selectedMainOption);
 }
 
+void handlePinEntry() {
+  if (readButton() == UP) {
+    pinRow = (pinRow + 3) % 4;
+    drawPinEntry(pinRow,pinCol);
+    delay(100);
+  }
+  if (readButton() == DOWN) {
+    pinRow = (pinRow + 1) % 4;
+    drawPinEntry(pinRow,pinCol);
+    delay(100);
+  }
+  if (readButton() == LEFT) {
+    pinCol = (pinCol + 5) % 3;
+    drawPinEntry(pinRow,pinCol);
+    delay(100);
+  }
+  if (readButton() == RIGHT) {
+    pinCol = (pinCol + 1) % 3;
+    drawPinEntry(pinRow,pinCol);
+    delay(100);
+  }
+
+  if (readButton() == CENTER) {
+    char c = keyboardPinEntry[pinRow][pinCol];
+    if (c == '<') {
+      if (pinInput.length() > 0) pinInput.remove(pinInput.length() - 1);
+    } else if (c != ' ') {
+      pinInput += c;
+    }
+    drawPin(pinInput);
+    delay(200);
+  }
+
+  if (readButton() == A) {
+    if (isPinCorrect()) {
+      armed = toggleState(armed);
+      if (WiFi.isConnected() && client.connected()) {
+        updateStatus();
+      }
+      screen = MAIN_MENU;
+      drawMainMenu(mainMenuOptions, selectedMainOption);
+    } else {
+      screen = WRONG_PIN;
+      drawWrongPin();
+    }
+    pinInput = "";
+    delay(200);
+  }
+
+  if (readButton() == C) {
+    screen = MAIN_MENU;
+    drawMainMenu(mainMenuOptions, selectedMainOption);
+    delay(200);
+  }
+}
+
+void handleWrongPin() {
+  delay(2000);
+  screen = MAIN_MENU;
+  drawMainMenu(mainMenuOptions, selectedMainOption);
+}
+
+bool isPinCorrect() {
+  return pin == pinInput ? true : false;
+}
+
+bool toggleState(bool armed) {
+  return armed == true ? false : true;
+}
+
+
 void drawStatus(bool armed) {
   if (prevStatus != armed) {
-    tft.fillRect(20,40,320,60,TFT_BLACK);
+    tft.fillRect(20,20,320,60,TFT_BLACK);
     prevStatus = armed;
   }
   String status = "Armed";
@@ -347,16 +464,16 @@ void drawConnectionStatus() {
 bool isOnline() {
   return client.connected() && WiFi.isConnected() ? true : false; 
 }
+
 void drawBatteryLevel(byte bateryLevel){
       if (bateryLevel<20){
       tft.setTextColor(TFT_RED, TFT_BLACK);
     } else {
       tft.setTextColor(TFT_GREEN, TFT_BLACK);
     }
-    tft.setTextDatum(MC_DATUM);
     tft.setTextSize(2);
     String text = "Batery: " + String(bateryLevel);
-    tft.drawString(text, 20, 60);
+    tft.drawString(text, 20, 70);
 }
 
 

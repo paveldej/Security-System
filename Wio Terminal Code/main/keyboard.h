@@ -7,6 +7,7 @@ extern KeyboardMode kbMode;
 
 extern String passwordInput;
 extern int row, col;
+extern int pinRow, pinCol;
 
 const char** getKeyboardLayout();
 
