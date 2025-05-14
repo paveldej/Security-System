@@ -5,7 +5,9 @@ const cors = require('cors');
 const mqtt = require('mqtt');
 
 const app = express();
-const client = mqtt.connect('wss://test.mosquitto.org:8081');
+// const client = mqtt.connect('wss://test.mosquitto.org:8081');
+const client = mqtt.connect('wss://mqtt.eclipseprojects.io:443/mqtt');
+
 
 app.use(cors());
 app.use(express.json());
