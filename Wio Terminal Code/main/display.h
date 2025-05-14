@@ -29,8 +29,8 @@ void drawPassword(const String& password);
 void drawKeyboard(const char** layout, int row, int col);
 void drawConnecting(const String& ssid);
 void drawConnected(const String& ssid);
-void drawFailed(const String& ssid)
-void drawPin()
+void drawFailed(const String& ssid);
+void drawPin();
 void drawPinEntry();
 void drawWrongPin();
 void drawStatus(bool armed);
