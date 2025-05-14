@@ -1,6 +1,5 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
-#include <SparkFunBQ27441.h>
 #include "Logger.h"
 #include <TimeLib.h>
 #include <ArduinoJson.h> 
@@ -9,6 +8,7 @@
 
 #include <vector>
 #include "AlarmTrigger.h"
+#include "battery.h"
 #include "display.h"
 #include "buttons.h"
 
@@ -54,24 +54,6 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
 Logger logger("/log.json");
 
-void setupBattery(void)
-{
-  // Use lipo.begin() to initialize the BQ27441-G1A and confirm that it's
-  // connected and communicating.
-  if (!lipo.begin()) // begin() will return true if communication is successful
-  {
-  // If communication fails, print an error message and loop forever.
-    Serial.println("Error: Unable to communicate with BQ27441.");
-    Serial.println("  Check wiring and try again.");
-    Serial.println("  (Battery must be plugged into Battery Babysitter!)");
-    while (1) ;
-  }
-  Serial.println("Connected to BQ27441!");
-  
-  // Uset lipo.setCapacity(BATTERY_CAPACITY) to set the design capacity
-  // of your battery.
-  lipo.setCapacity(BATTERY_CAPACITY);
-}
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -211,7 +193,7 @@ void updateStatusOnPageLoad()
 
 // send battery status via mqtt
 void updateBattery () {
-  byte soc = lipo.soc(); // read battery percentage
+  byte soc = getBatteryLevel();
   Serial.print("sending battery info: ");
   Serial.println(soc);
   char buffer[4];
@@ -239,7 +221,7 @@ bool flag = false;
 
 void loop()
 {
-  batteryLevel = lipo.soc();
+  batteryLevel = getBatteryLevel();
   handleScreen(screen);
 
 
