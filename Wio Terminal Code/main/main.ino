@@ -1,6 +1,5 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
-#include <SparkFunBQ27441.h>
 #include "Logger.h"
 #include <TimeLib.h>
 #include <ArduinoJson.h> 
@@ -9,6 +8,7 @@
 
 #include <vector>
 #include "AlarmTrigger.h"
+#include "battery.h"
 #include "display.h"
 #include "buttons.h"
 
@@ -16,8 +16,7 @@
 #define SERVER_PORT 1883          //MQTT server port 
 #define MANUAL_TRIGGER_DURATION 5 //how long the manual trigger should last in seconds
 #define TRIGGER_DURATION 30       //how long the non-manual trigger should last in seconds
-#define DETECTION_RANGE 40        //distance that the ultrasonic sensor detects as trigger in centimeters
-#define DETECTION_DURATION 15000  //how long we should be within the decetion range for triggering in milliseconds
+#define TRIGGER_THRESHOLD 1     // the sum of normalized distance and sound value that is needed for alarm triggers
 #define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
 #define BATTERY_CAPACITY 650      //Preset battery capacity
 
@@ -57,24 +56,6 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 7200, 60000); 
 Logger logger("/log.json");
 
-void setupBattery(void)
-{
-  // Use lipo.begin() to initialize the BQ27441-G1A and confirm that it's
-  // connected and communicating.
-  if (!lipo.begin()) // begin() will return true if communication is successful
-  {
-  // If communication fails, print an error message and loop forever.
-    Serial.println("Error: Unable to communicate with BQ27441.");
-    Serial.println("  Check wiring and try again.");
-    Serial.println("  (Battery must be plugged into Battery Babysitter!)");
-    while (1) ;
-  }
-  Serial.println("Connected to BQ27441!");
-  
-  // Uset lipo.setCapacity(BATTERY_CAPACITY) to set the design capacity
-  // of your battery.
-  lipo.setCapacity(BATTERY_CAPACITY);
-}
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -213,7 +194,7 @@ void updateStatusOnPageLoad()
 
 // send battery status via mqtt
 void updateBattery () {
-  byte soc = lipo.soc(); // read battery percentage
+  byte soc = getBatteryLevel();
   Serial.print("sending battery info: ");
   Serial.println(soc);
   char buffer[4];
@@ -236,50 +217,49 @@ void setup()
 }
 
 unsigned long updateBatteryPeriod = millis();
-unsigned long objectDetectedStart = millis();
 bool flag = false;
+
+
 void loop()
 {
-  batteryLevel = lipo.soc();
+  batteryLevel = getBatteryLevel();
   handleScreen(screen);
 
+
   if (!WiFi.isConnected()) {
-    objectDetectedStart = millis();
     return;
   }
 
   if (!client.connected()) {
     reconnect();
   }
+  client.loop();
+
+  if(armed == false){
+    return;
+    
+  }
+  
   if (flag == false){
       setupTime();  
       logger.begin();
       flag = true;
   }
-  client.loop();
 
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
-
-  if (armed == false){
-    objectDetectedStart = millis();
-    return;
-  }
-
-  //we trigger it when its less than or equal to the detection range and it triggers for a certain trigger duration
-  if (alarmTrigger.objectIsClose(DETECTION_RANGE)){
-    if(millis() - objectDetectedStart >= DETECTION_DURATION) {
-      client.publish(getTrigger, "trigger");
-      Serial.println("Intruder alert published to MQTT!");
-     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
-     logger.log("Trigger","Intruder Detected");
+  Serial.println(alarmTrigger.getNormalizedVolume());
+  if(alarmTrigger.getNormalizedDistance() + alarmTrigger.getNormalizedVolume() >= TRIGGER_THRESHOLD) {
+    client.publish(getTrigger, "trigger");
+    Serial.println("Intruder alert published to MQTT!");
+    alarmTrigger.triggerAlarm(TRIGGER_DURATION);
+    logger.log("Trigger","Intruder Detected");
      Serial.println("triggered");
-    }
   } else {
-    objectDetectedStart = millis();
+   
   }
   delay(100);
 }
