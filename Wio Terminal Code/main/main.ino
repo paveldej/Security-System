@@ -1,32 +1,10 @@
 #include "rpcWiFi.h"
 #include <PubSubClient.h>
 #include <SparkFunBQ27441.h>
-#include "Logger.h"
-#include <TimeLib.h>
-#include <ArduinoJson.h> 
-#include <WiFiUdp.h>
-#include <NTPClient.h>
 
-#include <vector>
-#include "AlarmTrigger.h"
-#include "display.h"
-#include "buttons.h"
-
-#define WIFI_TIMEOUT 5            //Retry after a certain amount of seconds
-#define SERVER_PORT 1883          //MQTT server port 
-#define MANUAL_TRIGGER_DURATION 5 //how long the manual trigger should last in seconds
-#define TRIGGER_DURATION 30       //how long the non-manual trigger should last in seconds
-#define DETECTION_RANGE 40        //distance that the ultrasonic sensor detects as trigger in centimeters
-#define DETECTION_DURATION 15000  //how long we should be within the decetion range for triggering in milliseconds
-#define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
-#define BATTERY_CAPACITY 650      //Preset battery capacity
-
-extern std::vector<String> mainMenuOptions;
-extern ScreenState screen;
-
-extern std::vector<String> ssids;
-extern int selectedSSID;
-extern String passwordInput;
+// Update these with values suitable for your network.
+const char *ssid = "forza juve";      // your network SSID
+const char *password = "filqwerty"; // your network password
 
 const char *ID = "Wio-Terminal-Client";  // Name of our device, must be unique
 const char *TOPIC = "Status";  // Topic to subcribe to
@@ -235,8 +213,7 @@ void setup()
 }
 
 unsigned long updateBatteryPeriod = millis();
-unsigned long objectDetectedStart = millis();
-bool flag = false;
+
 void loop()
 {
   batteryLevel = lipo.soc();
@@ -263,22 +240,20 @@ void loop()
     updateBatteryPeriod = millis();
   }
 
-  if (armed == false){
-    objectDetectedStart = millis();
-    return;
-  }
 
-  //we trigger it when its less than or equal to the detection range and it triggers for a certain trigger duration
-  if (alarmTrigger.objectIsClose(DETECTION_RANGE)){
-    if(millis() - objectDetectedStart >= DETECTION_DURATION) {
-      client.publish(getTrigger, "trigger");
-      Serial.println("Intruder alert published to MQTT!");
-     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
-     logger.log("Trigger","Intruder Detected");
-     Serial.println("triggered");
-    }
+
+
+  float distance = alarmTrigger.getNormalizedDistance();
+  float volume = alarmTrigger.getNormalizedVolume();
+
+ 
+  if(distance + volume >= 1.5) {
+    client.publish(getTrigger, "trigger");
+    Serial.println("Intruder alert published to MQTT!");
+    alarmTrigger.triggerAlarm(30);
+    
   } else {
-    objectDetectedStart = millis();
+   
   }
   delay(100);
 }
