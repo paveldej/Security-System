@@ -20,6 +20,8 @@
 #define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
 #define BATTERY_CAPACITY 650      //Preset battery capacity
 
+const String pin = "1234";
+
 extern std::vector<String> mainMenuOptions;
 extern ScreenState screen;
 
@@ -35,7 +37,7 @@ const char *getTrigger = "Status/getTrigger"; // This topic is meant to handle m
 const char *setTrigger = "Status/setTrigger"; // and possibly others in the future
 const char *requestLogs = "requestLogs";
 const char *pubBatteryLevel = "wioTerminal/battery"; // battery level publisher
-//const char *server = "test.mosquitto.org"; // Server URL
+// const char *server = "test.mosquitto.org"; // Server URL
 const char *server = "mqtt.eclipseprojects.io"; //alternative mqtt broker
 // const char *server = "broker.emqx.io"; //alternative mqtt broker
 
@@ -164,7 +166,6 @@ void setupMQTT() {
   client.setCallback(callback); 
 }
 
-//send battery status via mqtt
 void updateStatus()
 {
   {

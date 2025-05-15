@@ -7,13 +7,16 @@ KeyboardMode kbMode = UPPER;
 //set of keyboard characters to display 
 const char** keyboard = getKeyboardLayout();
 String passwordInput = "";
+String pinInput = "";
 int row = 0, col = 0;
+int pinRow = 0, pinCol = 0;
 
 // Keyboard layouts
 const char* keyboardUpper[] = {"ABCDEF", "GHIJKL", "MNOPQR", "STUVWX", "YZ <- "};
 const char* keyboardLower[] = {"abcdef", "ghijkl", "mnopqr", "stuvwx", "yz <- "};
 const char* keyboardDigits[] = {"123456", "7890+-", "!@#$%^", "&*()[]", "{}_=< "};
 const char* keyboardSymbols[] = {":;\"',.", "/?|\\~` ", "<>-+= ", "      ", "     <-"};
+const char* keyboardPinEntry[] = {"123","456","789"," 0<"};
 
 const char** getKeyboardLayout() {
   switch (kbMode) {
