@@ -34,9 +34,10 @@ build:
     - arduino-cli core install Seeeduino:samd
     - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal || { echo "Compiling the arduino code has failed." >&2; exit 1; }
     - cd -
-  only:
-    - merge_requests
-
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    
 test:
   stage: test
   tags:
@@ -49,8 +50,9 @@ test:
     - cd ..
     - cd ..
 
-  only:
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 verify:
   stage: verify
@@ -67,5 +69,6 @@ verify:
     - echo "Checking authentication server"
     - node auth-server.cjs check
 
-  only:
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
