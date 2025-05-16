@@ -1,5 +1,22 @@
 let logs = [];
 
+
+function getLogMessage(key, value) { //method to choose what gets added to log
+  if (key === 'Status' && value === 'Armed') {
+    return 'Alarm was armed!';
+  }
+  if (key === 'Status' && value === 'Disarmed') {
+    return 'Alarm was disarmed!';
+  }
+  if (key === 'Trigger' && value === 'Intruder detected') {
+    return 'Alarm was triggered!';
+  }
+  
+
+  // Default fallback
+  return `${key}:${value}`;
+}
+
 function GetLogs(logs) {
   if (typeof window === 'undefined') {
     // Node.js
@@ -25,17 +42,32 @@ function GetLogs(logs) {
 
       let formattedLogs = logs.map(log => {
         try {
-          return JSON.stringify(JSON.parse(log), null, 2);
+          const parsed = JSON.parse(log);
+          const timestamp = parsed.timestamp || "No timestamp";
+      
+          delete parsed.timestamp;
+          const [key, value] = Object.entries(parsed)[0] || ["<unknown>", "<unknown>"];
+          const logMessage = getLogMessage(key, value);
+          return `${logMessage}, ${timestamp}`;
         } catch (e) {
           return log.toString();
         }
-      }).join('<hr>');
+      }).join('\n');
+      
+      logsContent.textContent = formattedLogs;
 
-      logsContent.innerHTML = `<pre>${formattedLogs}</pre>`;
       modal.show();
       return logs;
     } else {
-      alert("No logs available yet.");
+      console.log("No logs available yet."); // always safe fallback
+
+// Optionally display a Bootstrap modal with a simple message, e.g.:
+
+const logsModal = new bootstrap.Modal(document.getElementById('logsModal'));
+const logsContent = document.getElementById('logsContent');
+
+logsContent.textContent = "No logs available yet.";
+logsModal.show();
       return "No logs available yet.";
     }
   }
