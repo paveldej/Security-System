@@ -1,44 +1,57 @@
-const alert = document.getElementById("batteryAlert");
+const alertBox = document.getElementById("batteryAlert");
 const batteryPercentageElement = document.getElementById("batteryPercentage");
 
-
-
 function batteryNotification() {
-  console.log("Battery level is low. Displaying notification...");
-  alert.classList.add("show");  // Add the "show" class to make the alert visible
+  console.log("🔋 Battery level is low. Displaying notification...");
+  alertBox.classList.remove("hidden");
+  alertBox.style.display = "flex";  // Ensure it appears if removed
 }
-
 
 function dismissBatteryAlert() {
-  alert.classList.remove("show");  // Remove the "show" class to hide the alert
+  alertBox.classList.add("hidden");
+
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 600); // matches CSS transition
 }
 
-
 client.on('connect', () => {
-  console.log('Connected to MQTT broker');
+  console.log('Connected to MQTT broker for battery monitoring');
 
   client.subscribe('wioTerminal/battery', (err) => {
-    if (!err) {
-      console.log('Subscribed to wioTerminal/battery');
+    if (err) {
+      console.error('Failed to subscribe to battery topic:', err);
     } else {
-      console.error('Error subscribing to wioTerminal/battery:', err);
+      console.log('Subscribed to wioTerminal/battery');
     }
   });
 });
 
-
-client.on('message', function (topic, message) {
-  console.log(`Received message on topic ${topic}: ${message.toString()}`);
-  
+client.on('message', (topic, message) => {
   if (topic === 'wioTerminal/battery') {
-    const batteryLevel = parseInt(message.toString(), 10); // Parse the message to an integer
-    console.log("Battery Level:", batteryLevel);
-    
-    batteryPercentageElement.innerHTML = `Battery: ${batteryLevel}%`;
+    const batteryLevel = parseInt(message.toString(), 10);
+    console.log(`🔋 Battery level received: ${batteryLevel}%`);
 
+    batteryPercentageElement.textContent = `${batteryLevel}%`;
+
+    // Update ring visually
+    const circle = document.querySelector('.ring-fill');
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (batteryLevel / 100) * circumference;
+
+    circle.style.strokeDashoffset = offset;
+
+    // Show alert under 20%
     if (batteryLevel < 20) {
       batteryNotification();
-      
     }
   }
 });
+
+// Trigger manually for testing
+//document.addEventListener("DOMContentLoaded", () => {
+//  setTimeout(() => {
+//    batteryNotification();  // You can comment this out later
+// }, 2000);
+//});

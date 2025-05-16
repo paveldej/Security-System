@@ -46,16 +46,18 @@
         </svg>
         <span class="battery-label" id="batteryPercentage">N/A</span>
       </div>
-    </div>
-
-    <div id="batteryAlert" class="alert-container">
-      <div class="custom-alert">
-        <span class="alert-text">🔋 Battery is low! Please check the power supply.</span>
-        <button class="dismiss-btn" onclick="dismissBatteryAlert()">×</button>
+      <div id="batteryAlert" class="battery-alert hidden" style="display: none;">
+      <div class="alert-box">
+        <span class="alert-icon">🪫</span>
+        <span class="alert-text">Battery is low! Please check the power supply.</span>
+        <button class="alert-dismiss" onclick="dismissBatteryAlert()">×</button>
       </div>
     </div>
   </div>
-  
+</div>
+
+
+
   <script src="../javascript/intrusionAlert.js"></script>  
   <script src="../javascript/sendEmail.js"></script>
   <script src="../javascript/allowNotifications.js"></script> 

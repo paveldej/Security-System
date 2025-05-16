@@ -39,8 +39,8 @@ app.get('/html/index.html', (req, res) => {
 // Serve everything else normally (All other files such as CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, '..')));
 
-// Run the server and listen on port 3000
-app.listen(PORT, () => {
+// Run the server and listen on port 3000 and also 0.0.0.0 for testing it on mobile phone
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`Web server running on port ${PORT}`);
   if (process.argv[2] === "check") {
   console.log("Web server script is reachable and safe.");
