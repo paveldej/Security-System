@@ -22,7 +22,7 @@ async function login() {
   if (result.success) {
     window.location.href = "/html/index.html";
   } else {
-    loginError.innerText = result.message || "Invalid login";
+    loginError.innerText = result.message || "The Email Or Password Provided is Incorrect!";
     warningBox.style.display = "block";
   }
 }
