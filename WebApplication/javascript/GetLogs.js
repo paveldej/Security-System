@@ -40,7 +40,7 @@ function GetLogs(logs) {
       const modal = new bootstrap.Modal(document.getElementById('logsModal'));
       const logsContent = document.getElementById('logsContent');
 
-      let formattedLogs = logs.map(log => {
+      let formattedLogs = logs.slice().reverse().map(log => {
         try {
           const parsed = JSON.parse(log);
           const timestamp = parsed.timestamp || "No timestamp";
