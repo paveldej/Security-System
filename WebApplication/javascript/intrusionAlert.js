@@ -13,18 +13,22 @@ client.on('message', (topic, message) => {
 });
 
 function showIntrusionAlert() {
-  const alertBox = document.getElementById('intrusionAlert');
-  alertBox.classList.remove('hidden');
-  alertBox.classList.add('show');
-
-  // Auto-hide after 10 seconds
+  const alert = document.getElementById("intrusionAlert");
+  alert.style.display = "flex"; // make it visible
+  requestAnimationFrame(() => {
+    alert.classList.remove("hidden");
+  });
+  // Auto-hide after 5 seconds
   setTimeout(() => {
     dismissIntrusionAlert();
-  }, 10000);
+  }, 5000);
 }
 
 function dismissIntrusionAlert() {
-  const alertBox = document.getElementById('intrusionAlert');
-  alertBox.classList.remove('show');
-  alertBox.classList.add('hidden');
+  const alert = document.getElementById("intrusionAlert");
+  alert.classList.add("hidden");
+
+  setTimeout(() => {
+    alert.style.display = "none";
+  }, 600); // match CSS transition
 }

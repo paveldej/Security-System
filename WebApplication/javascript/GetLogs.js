@@ -8,7 +8,7 @@ function getLogMessage(key, value) { //method to choose what gets added to log
   if (key === 'Status' && value === 'Disarmed') {
     return 'Alarm was disarmed!';
   }
-  if (key === 'Trigger' && value === 'Intruder detected') {
+  if (key === 'Trigger' && value === 'Intruder Detected') {
     return 'Alarm was triggered!';
   }
   
