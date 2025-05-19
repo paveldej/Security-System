@@ -19,9 +19,9 @@ client.on('connect', () => {
 client.on('message', function (topic, message) {
   if (topic === "Status/getStatus") {
     s = message.toString();
+    updateUI()
     console.log('Received status:', s);
     console.log(s);
-    updateUI();
   }
 });
 
@@ -29,12 +29,13 @@ client.on('message', function (topic, message) {
 function updateUI() {
   if (s === "disarm") {
     armButton.textContent = "Arm";
-    systemStatus.textContent = "Status: Disarmed";
+    systemStatus.textContent = "Disarmed";
   } else if (s === "arm") {
     armButton.textContent = "Disarm";
-    systemStatus.textContent = "Status: Armed";
+    systemStatus.textContent = "Armed";
   }
 }
+
 
 // Toggle the alarm status
 function toggleAlarm() {
