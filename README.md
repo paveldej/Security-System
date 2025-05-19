@@ -23,7 +23,7 @@ For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows 
 
 ## System Architecture 
 
-![System Architecture Diagram](uhttps://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/wikis/System-Architecture-Diagram/uploads/b9ef269ff8e6d7b67783c85236e3538c/MVP1architecure.drawio__1_.svg)
+![System Architecture Diagram](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/wikis/System-Architecture-Diagram/uploads/b9ef269ff8e6d7b67783c85236e3538c/MVP1architecure.drawio__1_.svg)
 
 ## Contributions
 
