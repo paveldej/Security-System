@@ -32,7 +32,9 @@ client.on('message', (topic, message) => {
     const batteryLevel = parseInt(message.toString(), 10);
     console.log(`🔋 Battery level received: ${batteryLevel}%`);
 
-    batteryPercentageElement.textContent = `${batteryLevel}%`;
+    // batteryPercentageElement.textContent = `&#128267${batteryLevel}%`;
+    batteryPercentageElement.textContent = `🔋${batteryLevel}%`;
+
 
     // Update ring visually
     const circle = document.querySelector('.ring-fill');
