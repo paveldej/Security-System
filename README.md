@@ -23,6 +23,8 @@ For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows 
 
 ## System Architecture 
 
+![System Architecture Diagram](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/wikis/System-Architecture-Diagram)
+
 ## Contributions
 
 - Pavel Dejkoski (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
