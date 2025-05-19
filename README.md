@@ -1,43 +1,54 @@
-## Pavel's Security System 
+# Pavel's Security System 
 
-# Table of Contents
+## Table of Contents
 
-# System Description
+## System Description
 
 Pavel’s security system intends to prevent break ins by notifying users about suspicious activities outside their doors. 
-It provides an application where users can arm, disarm and manually trigger the system. Additionally, users can receive notifications and check the device’s history of events.
-Pavel’s security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. The system provides two means of interaction for users; it has a web application and a display through the Wio Terminal. 
+It provides an application where users can arm, disarm and manually trigger the system. 
+Additionally, users can receive notifications and check the device’s history of events.
+Pavel’s security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. 
+The system provides two means of interaction for users; it has a web application and a display through the Wio Terminal. 
 
-# Purpose and benefits of the system
+## Purpose and benefits of the system
 
 Pavels Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
 Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, which are provided to users from the box.
 For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
 
 
-# Setup Manual
+## Setup Manual
 
 
 
-# System Architecture 
+## System Architecture 
 
-# Contributions
+## Contributions
 
-- Pavel Dejkoski - CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
-- Simon Nilrud - Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
-- Volodymyr Filippov - Arduino UI & Network connection, Arduino UI
-- Riad Santir - Web Page authentication server and frontend, 
-- Máté Stier - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
+- Pavel Dejkoski (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
+- Simon Nilrud (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
+- Volodymyr Filippov (@volfil) - Arduino UI & Network connection, Arduino UI
+- Riad Santir (@santir) - Web Page authentication server and frontend, 
+- Máté Stier (@mates) - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
 
+## Tools & Hardware used
 
-# Connecting to a power source
+	Wio terminal (https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
+	Battery for Wio terminal (https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
+
+	Ultrasonic Sensor (https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
+	Chainable RGB Led (https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
+	Sound Buzzer (https://wiki.seeedstudio.com/Grove-Buzzer/)
+	SD card (https://en.wikipedia.org/wiki/SD_card)
+
+### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
 For ease of use, we have provided a battery that you can to connect using the pins on the front of the battery/chassis to the back of the terminal.
 
 You can use a USB-C to power either the terminal directly or to charge the battery. To turn the battery on, hold down the black button on the bottom of the battery.
 
-# Connecting the sensors
+### Connecting the sensors
 
 Once you've connected the battery/chassis you have to plug in the sensors.
 
@@ -45,7 +56,7 @@ The "Grove Ultrasonic Ranger" (two tubular metal pieces) is responsible for dete
 
 The "Grove RGB Chainable LED" should be connected directly below the power on button. Make sure you plug it in to the "in" part of the LED.
 
-# How to deploy
+### How to deploy
 
 Now that you've connected the sensors and provided power, you can now turn the device on. Put it on middle position.
 
