@@ -1,6 +1,34 @@
-## Getting started
+## Pavel's Security System 
 
-This documentation is meant to teach you how to set up this security system. Follow the instructions carefully, as they are essential for the functional integrity of your system.
+# Table of Contents
+
+# System Description
+
+Pavel’s security system intends to prevent break ins by notifying users about suspicious activities outside their doors. 
+It provides an application where users can arm, disarm and manually trigger the system. Additionally, users can receive notifications and check the device’s history of events.
+Pavel’s security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. The system provides two means of interaction for users; it has a web application and a display through the Wio Terminal. 
+
+# Purpose and benefits of the system
+
+Pavels Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
+Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, which are provided to users from the box.
+For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
+
+
+# Setup Manual
+
+
+
+# System Architecture 
+
+# Contributions
+
+- Pavel Dejkoski - CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
+- Simon Nilrud - Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
+- Volodymyr Filippov - Arduino UI & Network connection, Arduino UI
+- Riad Santir - Web Page authentication server and frontend, 
+- Máté Stier - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
+
 
 # Connecting to a power source
 
