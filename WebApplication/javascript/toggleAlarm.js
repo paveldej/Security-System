@@ -11,6 +11,7 @@ client.on('connect', () => {
     if (!err) {
       console.log('Subscribed to topic: getStatus');
       client.publish('requestLogs', 'getLogs');
+      client.publish('Status/setStatus', 'status');
     }
   });
 });
@@ -22,6 +23,7 @@ client.on('message', function (topic, message) {
     updateUI()
     console.log('Received status:', s);
     console.log(s);
+    isStatusReceived = true;
   }
 });
 
