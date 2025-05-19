@@ -35,12 +35,12 @@ For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows 
 
 ## Tools & Hardware used
 
-- Wio terminal [Seeed Studio Link](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
-- Battery Chassis for Wio terminal [Seeed Studio Link](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
-- Ultrasonic Ranger [Seeed Studio Link](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
-- Chainable RGB LED [Seeed Studio Link](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
-- Buzzer [Seeed Studio Link](https://wiki.seeedstudio.com/Grove-Buzzer/)
-- SD card (min. 2GB) [Wikipedia](https://en.wikipedia.org/wiki/SD_card)
+- [Wio terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
+- [Battery Chassis](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
+- [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
+- [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
+- [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
+- [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
 
 ### Connecting to a power source
 
