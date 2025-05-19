@@ -30,21 +30,9 @@ function updateUI() {
   if (s === "disarm") {
     armButton.textContent = "Arm";
     systemStatus.textContent = "Disarmed";
-    
-    systemStatus.classList.remove("armed");
-    systemStatus.classList.add("disarmed");
-
-    armButton.classList.remove("armed");
-    armButton.classList.add("disarmed");
   } else if (s === "arm") {
     armButton.textContent = "Disarm";
     systemStatus.textContent = "Armed";
-    
-    systemStatus.classList.remove("disarmed");
-    systemStatus.classList.add("armed");
-
-    armButton.classList.remove("disarmed");
-    armButton.classList.add("armed");
   }
 }
 
@@ -53,10 +41,8 @@ function updateUI() {
 function toggleAlarm() {
   if (s === "arm") {
     client.publish('Status/setStatus', 'disarm');
-    client.publish("status/getStatus", "");
   } else {
     client.publish('Status/setStatus', 'arm');
-    client.publish("status/getStatus", "");
   }
 }
 armButton.addEventListener('click', toggleAlarm);
