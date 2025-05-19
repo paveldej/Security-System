@@ -42,6 +42,12 @@ For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows 
 - [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
 - [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
 
+## Lincense
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
+## Setup Manual
+
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
