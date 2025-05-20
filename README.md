@@ -22,14 +22,14 @@ Additionally, users can receive notifications and check the device’s history o
 Pavel’s security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. 
 The system provides two means of interaction for users; it has a web application and a display through the Wio Terminal. 
 
-## Purpose and benefits of the system
+## Purpose and benefits of the system 
 
 Pavels Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
 Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, which are provided to users from the box.
 For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
 
 
-## System Architecture 
+## System Architecture 📐
 Pavel’s security system is composed of 3 layers; the web application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
 
 The web application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the authentication server and static file server.
@@ -89,7 +89,7 @@ After this, open the Web Application folder and click on the index.html file ins
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
-## Contributions
+## Contributions 
 
 - **Pavel Dejkoski** (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
 - **Simon Nilrud** (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
