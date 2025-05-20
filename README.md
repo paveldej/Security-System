@@ -17,12 +17,16 @@ Since the System provides the authentication mechanism, it lets users have multi
 For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
 
 
-## Setup Manual
-
-
-
 ## System Architecture 
+Pavel’s security system is composed of 3 layers; the web application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
 
+The web application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the authentication server and static file server.
+
+The device software & email server layer handles reading and processing input data, sending email notifications and displaying system info on the Wio terminal.
+
+Lastly, the broker layer handles communication between the other two layers with a pub/sub model.
+
+Diagram of the Architecture:
 ![Architecture Diagram](docs/architecture_diagram.svg)
 
 ## Contributions
@@ -46,7 +50,9 @@ For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows 
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
 
-## Setup Manual
+## Getting Started
+
+### Setup Manual
 
 ### Connecting to a power source
 
