@@ -2,6 +2,18 @@
 
 ## Table of Contents
 
+- [System description](#system-description)
+- [Purpose and benefits](#purpose-and-benefits-of-the-system)
+- [System Architecture](#system-architecture)
+- [Contributions](#contributions)
+- [Tools & Hardware used](#tools--hardware-used)
+- [Setup Manual](#getting-started)  
+    - [Installing dependencies](#installing-dependencies)
+    - [Uploading the source code](#uploading-the-source-code)
+    - [Connecting to a power source](#connecting-to-a-power-source)
+    - [Connecting the sensors](#connecting-the-sensors)
+- [License](#lincense)
+
 ## System Description
 
 Pavel’s security system intends to prevent break ins by notifying users about suspicious activities outside their doors. 
@@ -29,30 +41,14 @@ Lastly, the broker layer handles communication between the other two layers with
 Diagram of the Architecture:
 ![Architecture Diagram](docs/architecture_diagram.svg)
 
-## Contributions
 
-- Pavel Dejkoski (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
-- Simon Nilrud (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
-- Volodymyr Filippov (@volfil) - Arduino UI & Network connection, Arduino UI
-- Riad Santir (@santir) - Web Page authentication server and frontend, 
-- Máté Stier (@mates) - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
+## Setup Manual 🛠️
 
-## Tools & Hardware used
+### Installing dependencies 
 
-- [Wio terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
-- [Battery Chassis](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
-- [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
-- [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
-- [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
-- [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
+<pre><code>arduino-cli</code></pre>
 
-## Lincense
-
-This project is licensed under the [GNU General Public License v3.0](LICENSE).
-
-## Getting Started
-
-### Setup Manual
+### Uploading the source code 
 
 ### Connecting to a power source
 
@@ -85,3 +81,25 @@ Now you can run the "node server.cjs" file inside the Web Application/javascript
 After this, open the Web Application folder and click on the index.html file inside the html folder there.
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
+
+## Contributions
+
+- **Pavel Dejkoski** (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
+- **Simon Nilrud** (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
+- **Volodymyr Filippov** (@volfil) - Arduino UI & Network connection, Arduino UI
+- **Riad Santir** (@santir) - Web Page authentication server and frontend, 
+- **Máté Stier** (@mates) - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
+
+
+## Tools & Hardware used 
+
+- [Wio terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
+- [Battery Chassis](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
+- [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
+- [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
+- [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
+- [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
+
+## Lincense 📜
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
