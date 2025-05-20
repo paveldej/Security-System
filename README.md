@@ -38,7 +38,7 @@ The device software & email server layer handles reading and processing input da
 
 Lastly, the broker layer handles communication between the other two layers with a pub/sub model.
 
-Diagram of the Architecture:
+*Diagram of the Architecture:*
 ![Architecture Diagram](docs/architecture_diagram.svg)
 
 
@@ -46,9 +46,16 @@ Diagram of the Architecture:
 
 ### Installing dependencies 
 
-<pre><code>arduino-cli</code></pre>
+⚠️
+Make sure you have [Arduino CLI](https://docs.arduino.cc/arduino-cli/installation/) installed.
 
 ### Uploading the source code 
+
+Once you have all the dependencies listed, you have to compile the code
+<pre><code>arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal</code></pre>
+
+After doing this, you have to upload it to the terminal using the following command:
+<pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
 
 ### Connecting to a power source
 
