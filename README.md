@@ -78,7 +78,10 @@ arduino-cli lib install "Seeed Arduino rpcWifi@1.1.0"
 arduino-cli lib install "ArduinoJson@7.4.1"
 arduino-cli lib install "NTPClient@3.2.1"
 arduino-cli lib install "Time@1.6.1"
+
 </code></pre>
+
+Furthermore you have to install this the following [zip file](https://github.com/Seeed-Studio/Grove_Chainable_RGB_LED/archive/refs/heads/master.zip) and unzip it into the Arduino/libaries folder
 
 
 #### Uploading the source code 
