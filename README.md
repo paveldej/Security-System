@@ -73,7 +73,7 @@ Now that you've connected the sensors and provided power, you can now turn the d
 ⚠️
 Note: Make sure you have [Arduino CLI](https://docs.arduino.cc/arduino-cli/installation/) installed.
 
-You need to download the following dependencies by using the Arduino CLI
+1. Download the following dependencies by using the Arduino CLI
 <pre><code>
 arduino-cli lib install "Grove Ultrasonic Ranger@1.0.1"
 arduino-cli lib install "PubSubClient@2.8"
@@ -91,25 +91,27 @@ Furthermore you have to install this the following [zip file](https://github.com
 
 #### Uploading the source code 
 
-Once you have all the dependencies listed, you have to compile the code
+// REMOVE:
+2. Once you have all the dependencies listed, you have to compile the code
 <pre><code>arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal</code></pre>
 
-After doing this, you have to upload it to the terminal using the following command:
+3. Upload the compiled bin file to the terminal using the following command:
 <pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
 
 
-First you have to download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application folder:
+4. Download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application folder:
 
 <pre><code>npm install</code></pre>
-and then run the following commands in different terminals/consoles
+
+5. Run the following commands in different terminals/consoles
 <pre><code>node web-server.cjs</pre></code>
 <pre><code>node auth-server.cjs</pre></code>
 <pre><code>node server.cjs</code></pre>
 
-Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
+⚠️ Note: Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
 
 
-After this, open the Web Application folder and click on the index.html file inside the html folder there.
+6. Open the "*Web Application/html*" folder and open the **index.html file**.
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
