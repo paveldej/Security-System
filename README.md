@@ -111,7 +111,9 @@ Furthermore you have to install this the following [zip file](https://github.com
 ⚠️ Note: Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
 
 
-6. Open the "*Web Application/html*" folder and open the **login.html file**.
+6. Open the browser of your choice and type [http://localhost:3001/html/login.html](http://localhost:3001/html/login.html).
+
+7. Add a .env file????????? and log in????
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
