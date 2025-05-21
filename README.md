@@ -53,17 +53,17 @@ Lastly, the broker layer handles communication between the other two layers with
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
-For ease of use, we have provided a battery that you can connect using the pins on the front of the battery/chassis to the back of the terminal.
 
-You can use a USB-C to power either the terminal directly or to charge the battery. To turn the battery on, hold down the black button on the bottom of the battery.
+⚠️ Make sure that you have the ["Wio Terminal Chassis Battery"](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/) that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
+
+You can use a USB-C to charge the battery. To turn the battery on, hold down the black button on the back side of the battery.
 
 ### Connecting the sensors
 
-Once you've connected the battery/chassis you have to plug in the sensors.
+Once you've connected the battery/chassis you have to plug in the sensors into the ports on the chassis in the following way:
 
-The "Grove Ultrasonic Ranger" (two tubular metal pieces) is responsible for detecting motions. It should be connected to the port opposite to the three-way power on button (on the battery/chassis).
+![ports](docs/ports.jpg)
 
-The "Grove RGB Chainable LED" should be connected directly below the power on button. Make sure you plug it in to the "in" part of the LED.
 
 ### How to deploy
 -----
@@ -125,14 +125,18 @@ Now you can arm and disarm your security system and get notification on the appl
 
 
 ## Tools & Hardware used 
-
-- [Wio terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
-- [Battery Chassis](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
-- [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
-- [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
-- [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
-- [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
-
+- Hardware
+    - [Wio terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
+    - [Battery Chassis](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/)
+    - [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
+    - [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
+    - [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
+    - [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
+- Software Tools
+    - [Node.js](https://nodejs.org/en/download)
+    - [Bootstrap.js](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
+    - [Arduino IDE](https://www.arduino.cc/en/software/)
+    - [Draw.io](https://en.wikipedia.org/wiki/Diagrams.net)
 ## License 📜
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
