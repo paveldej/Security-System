@@ -73,30 +73,41 @@ void Logger::publish(PubSubClient& client) {
     return;
   }
 
-  while (logFile.available()) {
-    String line = logFile.readStringUntil('\n');
-    line.trim();  // Remove leading/trailing whitespace
+  long pos = logFile.size() - 1;
+  String line = "";
 
-    if (line.length() == 0) continue;  // Skip empty lines
+  while (pos >= 0) {
+    logFile.seek(pos);
+    char c = logFile.read();
 
-    // Optionally validate that line is a valid JSON string
-    StaticJsonDocument<256> doc;
-    DeserializationError error = deserializeJson(doc, line);
-    if (error) {
-      Serial.println("Invalid JSON in log, skipping:");
-      Serial.println(line);
-      continue;
+    if (c == '\n' || pos == 0) {
+      if (pos == 0) line = c + line; // Include first character
+
+      line.trim();
+      if (line.length() > 0) {
+        StaticJsonDocument<256> doc;
+        DeserializationError error = deserializeJson(doc, line);
+        if (error) {
+          Serial.println("Invalid JSON in log, skipping:");
+          Serial.println(line);
+        } else {
+          bool success = client.publish("getLogs", line.c_str());
+          if (!success) {
+            Serial.println("Failed to publish log line.");
+          }
+          delay(10);
+        }
+      }
+
+      line = "";  // Reset for the next line
+    } else {
+      line = c + line;  // Prepend character
     }
 
-    // Publish and delay to avoid flooding
-    bool success = client.publish("getLogs", line.c_str());
-    if (!success) {
-      Serial.println("Failed to publish log line.");
-    }
-
-    delay(10);  // Small delay to avoid flooding the broker
+    pos--;
   }
 
   logFile.close();
-  Serial.println("All logs published.");
+  Serial.println("All logs published in reverse.");
 }
+
