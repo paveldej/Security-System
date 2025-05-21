@@ -12,20 +12,21 @@ dotenv.config();
 const app = express();
 const PORT = 3001;
 
-// In-memory login flag (temporary, not persistent)
 let isLoggedIn = false;
 
 app.use(bodyParser.json());
 
-// Serve static files (CSS, JS, images, etc.)
-app.use(express.static(path.join(__dirname, '..')));
+// ⚠️ Serve ONLY public assets — avoid exposing html/index.html directly
+app.use('/img', express.static(path.join(__dirname, '..', 'img')));
+app.use('/javascript', express.static(path.join(__dirname, '..', 'javascript')));
+app.use('/css', express.static(path.join(__dirname, '..', 'css')));
 
 // Serve login page to everyone
 app.get('/html/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'html', 'login.html'));
 });
 
-// Serve main page only if logged in
+// Serve index.html ONLY if logged in
 app.get('/html/index.html', (req, res) => {
   if (isLoggedIn) {
     res.sendFile(path.join(__dirname, '..', 'html', 'index.html'));
@@ -34,14 +35,14 @@ app.get('/html/index.html', (req, res) => {
   }
 });
 
-// Proxy requests to auth server
+// Proxy to auth server
 app.use('/auth-proxy', createProxyMiddleware({
   target: 'http://localhost:4000',
   changeOrigin: true,
   pathRewrite: { '^/auth-proxy': '' },
 }));
 
-// Login route: forwards to auth server
+// Login route
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -66,7 +67,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Fallback: redirect all unmatched routes to login page
+// Catch-all fallback route
 app.get(/.*/, (req, res) => {
   res.redirect("/html/login.html");
 });
@@ -74,8 +75,4 @@ app.get(/.*/, (req, res) => {
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Web server running on port ${PORT}`);
-  if (process.argv[2] === "check") {
-    console.log("Web server script is reachable and safe.");
-    process.exit(0);
-  }
 });
