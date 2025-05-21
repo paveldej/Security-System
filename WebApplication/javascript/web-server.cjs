@@ -39,6 +39,11 @@ app.get('/html/index.html', (req, res) => {
 // Serve everything else normally (All other files such as CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, '..')));
 
+// Redirect any unknown or unmatched URL to the login page using regular expression (handles 404 fallback)
+app.get(/.*/, (req, res) => {
+  res.redirect("/html/login.html");
+});
+
 // Run the server and listen on port 3001 and also 0.0.0.0 for testing it on mobile phone
 app.listen(PORT,'0.0.0.0', () => {
   console.log(`Web server running on port ${PORT}`);
