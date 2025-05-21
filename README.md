@@ -99,7 +99,7 @@ Furthermore you have to install this the following [zip file](https://github.com
 <pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
 
 
-4. Download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application folder:
+4. Download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application/javascript folder:
 
 <pre><code>npm install</code></pre>
 
@@ -111,7 +111,7 @@ Furthermore you have to install this the following [zip file](https://github.com
 ⚠️ Note: Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
 
 
-6. Open the "*Web Application/html*" folder and open the **index.html file**.
+6. Open the "*Web Application/html*" folder and open the **login.html file**.
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
