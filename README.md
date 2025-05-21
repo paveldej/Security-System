@@ -44,19 +44,6 @@ Lastly, the broker layer handles communication between the other two layers with
 
 ## Setup Manual 🛠️
 
-### Installing dependencies 
-
-⚠️
-Make sure you have [Arduino CLI](https://docs.arduino.cc/arduino-cli/installation/) installed.
-
-### Uploading the source code 
-
-Once you have all the dependencies listed, you have to compile the code
-<pre><code>arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal</code></pre>
-
-After doing this, you have to upload it to the terminal using the following command:
-<pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
-
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
@@ -73,17 +60,45 @@ The "Grove Ultrasonic Ranger" (two tubular metal pieces) is responsible for dete
 The "Grove RGB Chainable LED" should be connected directly below the power on button. Make sure you plug it in to the "in" part of the LED.
 
 ### How to deploy
-
+-----
 Now that you've connected the sensors and provided power, you can now turn the device on. Put it on middle position.
 
-First you have to download Node.js and import the following dependencies using npm:
-- express
-- nodemailer
-- cors
-- dotenv
-- mqtt
+#### Installing dependencies 
+⚠️
+Note: Make sure you have [Arduino CLI](https://docs.arduino.cc/arduino-cli/installation/) installed.
 
-Now you can run the "node server.cjs" file inside the Web Application/javascript folder through your terminal. Once you've run the command, you must leave the terminal open to use the application. Keep in mind you must have Node.js downloaded, and all the dependencies imported.
+You need to download the following dependencies by using the Arduino CLI
+<pre><code>
+arduino-cli lib install "Grove Ultrasonic Ranger@1.0.1"
+arduino-cli lib install "PubSubClient@2.8"
+arduino-cli lib install "Seeed Arduino rpcWifi@1.1.0"
+arduino-cli lib install "SparkFun BQ27441 LiPo Fuel Gauge Arduino Library@1.1.0"
+arduino-cli lib install "Seeed Arduino rpcWifi@1.1.0"
+arduino-cli lib install "ArduinoJson@7.4.1"
+arduino-cli lib install "NTPClient@3.2.1"
+arduino-cli lib install "Time@1.6.1"
+</code></pre>
+
+
+#### Uploading the source code 
+
+Once you have all the dependencies listed, you have to compile the code
+<pre><code>arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal</code></pre>
+
+After doing this, you have to upload it to the terminal using the following command:
+<pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
+
+
+First you have to download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application folder:
+
+<pre><code>npm install</code></pre>
+and then run the following commands in different terminals/consoles
+<pre><code>node web-server.cjs</pre></code>
+<pre><code>node auth-server.cjs</pre></code>
+<pre><code>node server.cjs</code></pre>
+
+Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
+
 
 After this, open the Web Application folder and click on the index.html file inside the html folder there.
 
