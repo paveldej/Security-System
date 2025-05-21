@@ -19,6 +19,7 @@
 #define TRIGGER_THRESHOLD 1     // the sum of normalized distance and sound value that is needed for alarm triggers
 #define BATTERY_UPDATE_RATE 10000 //How often we send updates about the state of the battery in milliseconds
 #define BATTERY_CAPACITY 650      //Preset battery capacity
+#define STATUS_UPDATE_RATE 3000
 
 const String pin = "1234";
 
@@ -217,6 +218,7 @@ void setup()
 }
 
 unsigned long updateBatteryPeriod = millis();
+unsigned long updateStatusPeriod = millis();
 bool flag = false;
 
 
@@ -235,6 +237,7 @@ void loop()
   }
   client.loop();
 
+
   if(armed == false){
     return;
     
@@ -246,12 +249,16 @@ void loop()
       flag = true;
   }
 
+  if (millis() - updateStatusPeriod >= STATUS_UPDATE_RATE) {
+    updateStatusOnPageLoad();
+    updateStatusPeriod = millis();
+  }
   // send battery info every n/1000 seconds
   if (millis() - updateBatteryPeriod >= BATTERY_UPDATE_RATE) {
     updateBattery();
     updateBatteryPeriod = millis();
   }
-  Serial.println(alarmTrigger.getNormalizedVolume());
+  // Serial.println(alarmTrigger.getNormalizedVolume());
   if(alarmTrigger.getNormalizedDistance() + alarmTrigger.getNormalizedVolume() >= TRIGGER_THRESHOLD) {
     client.publish(getTrigger, "trigger");
     Serial.println("Intruder alert published to MQTT!");

@@ -133,7 +133,7 @@ float AlarmTrigger::getNormalizedVolume() {
   int raw = analogRead(LOUDNESS_SENSOR_PIN);
 
   int deviation = raw/2;   // Deviation from silence 
-  Serial.println(deviation);
+  // Serial.println(deviation);
   float norm = SOUND_NORMALIZED_WEIGHT* ((float)deviation / MIC_MAX_DEVIATION);
   norm =  constrain(norm, 0.0, 1.0);     
   return norm;

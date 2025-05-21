@@ -17,7 +17,7 @@ function getLogMessage(key, value) { //method to choose what gets added to log
   return `${key}:${value}`;
 }
 
-function GetLogs(logs) {
+function getLogs(logs) {
   if (typeof window === 'undefined') {
     // Node.js
     console.log("The button works");
@@ -40,7 +40,7 @@ function GetLogs(logs) {
       const modal = new bootstrap.Modal(document.getElementById('logsModal'));
       const logsContent = document.getElementById('logsContent');
 
-      let formattedLogs = logs.slice().reverse().map(log => {
+      let formattedLogs = logs.slice().map(log => {
         try {
           const parsed = JSON.parse(log);
           const timestamp = parsed.timestamp || "No timestamp";
@@ -80,29 +80,29 @@ function sendlogRequest() {
 // Browser setup
 if (typeof window !== 'undefined') {
   document.addEventListener("DOMContentLoaded", function () {
-    const GetLogsButton = document.getElementById("GetLogs");
+    const getLogsButton = document.getElementById("getLogs");
 
     // Ensure logs are cleared each time the button is clicked
-    GetLogsButton.addEventListener('click', function () {
+    getLogsButton.addEventListener('click', function () {
       logs = [];
       sendlogRequest();
 
       setTimeout(() => {
         console.log("Clicked. Logs value:", logs);
-        GetLogs(logs);
+        getLogs(logs);
       }, 1000); 
     });
 
     client.on('connect', () => {
-      client.subscribe('GetLogs', (err) => {
+      client.subscribe('getLogs', (err) => {
         if (!err) {
-          console.log('Subscribed to GetLogs');
+          console.log('Subscribed to getLogs');
         }
       });
     });
 
     client.on('message', function (topic, message) {
-      if (topic === 'GetLogs') {
+      if (topic === 'getLogs') {
         const logStr = message.toString();
         console.log("Logs received: ", logStr);
         logs.push(logStr);
@@ -111,4 +111,4 @@ if (typeof window !== 'undefined') {
   });
 }
 
-module.exports = { GetLogs };
+module.exports = { getLogs };
