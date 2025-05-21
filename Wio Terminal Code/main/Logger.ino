@@ -89,7 +89,7 @@ void Logger::publish(PubSubClient& client) {
     }
 
     // Publish and delay to avoid flooding
-    bool success = client.publish("GetLogs", line.c_str());
+    bool success = client.publish("getLogs", line.c_str());
     if (!success) {
       Serial.println("Failed to publish log line.");
     }
