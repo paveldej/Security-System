@@ -1,4 +1,4 @@
-# Pavel's Security System 
+# Pavel Security System 
 
 ## Table of Contents
 
@@ -17,23 +17,23 @@
 
 ## System Description
 
-Pavel’s security system intends to prevent break ins by notifying users about suspicious activities outside their doors. 
+Pavel security system intends to prevent break-ins by notifying users about suspicious activities outside their doors. 
 It provides an application where users can arm, disarm and manually trigger the system. 
 Additionally, users can receive notifications and check the device’s history of events.
-Pavel’s security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. 
-The system provides two means of interaction for users; it has a web application and a display through the Wio Terminal. 
+Pavel security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. 
+The system provides two means of interaction for users; it has a Web Application and a display through the Wio Terminal. 
 
 ## Purpose and benefits of the system 
 
-Pavels Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
-Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, which are provided to users from the box.
-For the user’s convenience, the Seeed Wio-Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
+Pavel Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
+Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, provided to users out of the box.
+For the user’s convenience, the Seeed Wio Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
 
 
 ## System Architecture 📐
-Pavel’s security system is composed of 3 layers; the web application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
+Pavel security system is composed of 3 layers; the Web Application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
 
-The web application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the authentication server and static file server.
+The Web Application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the Authentication Server and static file server.
 
 The device software & email server layer handles reading and processing input data, sending email notifications and displaying system info on the Wio terminal.
 
@@ -48,7 +48,7 @@ Lastly, the broker layer handles communication between the other two layers with
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
-For ease of use, we have provided a battery that you can to connect using the pins on the front of the battery/chassis to the back of the terminal.
+For ease of use, we have provided a battery that you can connect using the pins on the front of the battery/chassis to the back of the terminal.
 
 You can use a USB-C to power either the terminal directly or to charge the battery. To turn the battery on, hold down the black button on the bottom of the battery.
 
@@ -113,7 +113,7 @@ Now you can arm and disarm your security system and get notification on the appl
 - **Pavel Dejkoski** (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
 - **Simon Nilrud** (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
 - **Volodymyr Filippov** (@volfil) - Arduino UI & Network connection, Arduino UI
-- **Riad Santir** (@santir) - Web Page authentication server and frontend, 
+- **Riad Santir** (@santir) - Web Page Suthentication Server and frontend 
 - **Máté Stier** (@mates) - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
 
 
@@ -126,6 +126,6 @@ Now you can arm and disarm your security system and get notification on the appl
 - [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
 - [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
 
-## Lincense 📜
+## License 📜
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
