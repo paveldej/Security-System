@@ -20,14 +20,16 @@
 Pavel security system intends to prevent break-ins by notifying users about suspicious activities outside their doors. 
 It provides an application where users can arm, disarm and manually trigger the system. 
 Additionally, users can receive notifications and check the device’s history of events.
-Pavel security system makes use of an Arduino based Terminal, called the Wio Terminal by Seeed Studio. 
+Pavel security system makes use of an Arduino based Terminal, called the [Wio Terminal](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/) by Seeed Studio. 
 The system provides two means of interaction for users; it has a Web Application and a display through the Wio Terminal. 
 
 ## Purpose and benefits of the system 
+Pavel Security System is a simple and reliable IoT solution to increase the security of the homes of our customers, and is relatively easy-to-use for regular people. 
 
-Pavel Security System is a simple and reliable IoT solution to increase security for homes of our customers, which is relatively easy-to-use for regular people. 
-Since the System provides the authentication mechanism, it lets users have multiple devices in different places, and control all of them through different accounts, provided to users out of the box.
-For the user’s convenience, the Seeed Wio Terminal provides a UI, that allows users to interact with the system and perform necessary actions, such as connecting to the wifi network and arm/disarm the system.
+Our System provides an authentication mechanism, which lets users connect to their security system securely from anywhere, after inputting their credentials, that is provided to them out of the box.
+
+For convenience, the Seeed Wio Terminal has its own User Interface, that allows users to interact with the system and perform all necessary actions, such as connecting to a Wifi network and allows them to arm or disarm the system without having to use the Web Application. 
+- TODO: you can also see information about the system there 
 
 
 ## System Architecture 📐
