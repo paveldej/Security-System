@@ -115,7 +115,7 @@ Now you can arm and disarm your security system and get notification on the appl
 
 ## Contributions 
 
-| Name                  | GitHub Handle(s)                 | Contributions                                                                                  |
+| Name                  | GitLab Handle(s)                 | Contributions                                                                                  |
 |-----------------------|----------------------------------|-----------------------------------------------------------------------------------------------|
 | **Pavel Dejkoski**        | @dejkoski                        | CI/CD pipeline, Email notification server, Logs (storing and sending through MQTT), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection |
 | **Simon Nilrud**          | @Ovan81, @nilrud                 | Web Page frontend, Log display, Manual triggering functionality, Sound-distance weight-based triggering |
