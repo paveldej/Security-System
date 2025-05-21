@@ -27,7 +27,7 @@
     <div class="status-box">
       <p class="status-line">
         <span class="label">Status:</span>
-        <span id="systemStatus">N/A</span>
+        <span id="systemStatus">Synchronizing...</span>
       </p>
     </div>
 
@@ -35,8 +35,8 @@
       <div class="circle-button" id="armButton">Press to ARM</div>
 
       <div class="controls">
-        <button class="btn" id="triggerAlarmButton">Trigger Alarm</button>
-        <button class="btn" id="getLogs">Get Logs</button>
+        <button class="btn" id="triggerAlarmButton">Test Alarm</button>
+        <button class="btn" id="getLogs">Recent Events</button>
       </div>
 
       <div class="battery-circle">
@@ -44,7 +44,9 @@
           <circle class="ring-bg" cx="40" cy="40" r="35" />
           <circle class="ring-fill" cx="40" cy="40" r="35" />
         </svg>
-        <span class="battery-label" id="batteryPercentage">&#128267N/A</span>
+        <span class="battery-label" id="batteryPercentage">
+          🔋<div class="spinner-inline"></div>
+        </span>
       </div>
       <div id="batteryAlert" class="battery-alert hidden" style="display: none;">
       <div class="alert-box">
