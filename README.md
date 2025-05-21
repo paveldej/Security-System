@@ -2,6 +2,8 @@
 
 ## Table of Contents
 
+//OBS: links don't work if you have an emoji in them
+
 - [System description](#system-description)
 - [Purpose and benefits](#purpose-and-benefits-of-the-system)
 - [System Architecture](#system-architecture)
@@ -29,7 +31,8 @@ Pavel Security System is a simple and reliable IoT solution to increase the secu
 Our System provides an authentication mechanism, which lets users connect to their security system securely from anywhere, after inputting their credentials, that is provided to them out of the box.
 
 For convenience, the Seeed Wio Terminal has its own User Interface, that allows users to interact with the system and perform all necessary actions, such as connecting to a Wifi network and allows them to arm or disarm the system without having to use the Web Application. 
-- TODO: you can also see information about the system there 
+
+// TODO: you can also see information about the system there 
 
 
 ## System Architecture 📐
@@ -112,11 +115,13 @@ Now you can arm and disarm your security system and get notification on the appl
 
 ## Contributions 
 
-- **Pavel Dejkoski** (@dejkoski)- CI/CD pipeline, Email notification server, Logs(storing and sending trough mqtt), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection
-- **Simon Nilrud** (@Ovan81, @nilrud)- Web Page frontend, Log display, Manual triggering functionality, sound-distance weight based triggering 
-- **Volodymyr Filippov** (@volfil) - Arduino UI & Network connection, Arduino UI
-- **Riad Santir** (@santir) - Web Page Suthentication Server and frontend 
-- **Máté Stier** (@mates) - CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI
+| Name                  | GitHub Handle(s)                 | Contributions                                                                                  |
+|-----------------------|----------------------------------|-----------------------------------------------------------------------------------------------|
+| **Pavel Dejkoski**        | @dejkoski                        | CI/CD pipeline, Email notification server, Logs (storing and sending through MQTT), Arduino UI, Website Notifications, Arduino and Web Page MQTT connection |
+| **Simon Nilrud**          | @Ovan81, @nilrud                 | Web Page frontend, Log display, Manual triggering functionality, Sound-distance weight-based triggering |
+| **Volodymyr Filippov**    | @volfil                          | Arduino UI & Network connection, Arduino UI                                                   |
+| **Riad Santir**           | @santir                          | Web Page Authentication Server and frontend                                                   |
+| **Máté Stier**            | @mates                           | CI/CD pipeline, Arduino sensor and actuator logic, Arduino MQTT connection, Arduino UI        |
 
 
 ## Tools & Hardware used 
