@@ -35,8 +35,12 @@
       <div class="circle-button" id="armButton">Press to ARM</div>
 
       <div class="controls">
-        <button class="btn" id="triggerAlarmButton">Test Alarm</button>
-        <button class="btn" id="getLogs">Recent Events</button>
+        <button class="btn" id="triggerAlarmButton">Trigger Alarm</button>
+        <!-- <button class="btn" id="getLogs">Recent Events</button> -->
+         <button id="getLogs" class="btn btn-primary">
+          <span class="spinner-border spinner-border-sm me-2 d-none" id="logsSpinner" role="status" aria-hidden="true"></span>
+          Get Logs
+        </button>
       </div>
 
       <div class="battery-circle">
@@ -88,7 +92,6 @@
 
 
   <script src="../javascript/intrusionAlert.js"></script>  
-  <script src="../javascript/sendEmail.js"></script>
   <script src="../javascript/allowNotifications.js"></script> 
   <script src="../javascript/deviceIsOffline.js"></script>
   <script src="../javascript/batteryNotification.js"></script> 

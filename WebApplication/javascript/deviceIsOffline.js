@@ -2,7 +2,7 @@ const deviceIsOfflineBox = document.getElementById("offlineOverlay");
 
 let isStatusReceived = false;
 
-setInterval(deviceIsOffline, 3000);
+setInterval(deviceIsOffline, 5000);
 
 function deviceIsOffline() {
     client.publish('Status/setStatus', 'status');
@@ -11,7 +11,7 @@ function deviceIsOffline() {
             deviceIsOfflineBox.classList.remove("hidden");
         }
         isStatusReceived = false;
-    }, 1000);
+    }, 2000);
 }
 
 
