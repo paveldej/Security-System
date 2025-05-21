@@ -27,7 +27,7 @@
     <div class="status-box">
       <p class="status-line">
         <span class="label">Status:</span>
-        <span id="systemStatus">N/A</span>
+        <span id="systemStatus">Synchronizing...</span>
       </p>
     </div>
 
@@ -36,7 +36,11 @@
 
       <div class="controls">
         <button class="btn" id="triggerAlarmButton">Trigger Alarm</button>
-        <button class="btn" id="getLogs">Get Logs</button>
+        <!-- <button class="btn" id="getLogs">Recent Events</button> -->
+         <button id="getLogs" class="btn btn-primary">
+          <span class="spinner-border spinner-border-sm me-2 d-none" id="logsSpinner" role="status" aria-hidden="true"></span>
+          Get Logs
+        </button>
       </div>
 
       <div class="battery-circle">
@@ -44,7 +48,9 @@
           <circle class="ring-bg" cx="40" cy="40" r="35" />
           <circle class="ring-fill" cx="40" cy="40" r="35" />
         </svg>
-        <span class="battery-label" id="batteryPercentage">&#128267N/A</span>
+        <span class="battery-label" id="batteryPercentage">
+          🔋<div class="spinner-inline"></div>
+        </span>
       </div>
       <div id="batteryAlert" class="battery-alert hidden" style="display: none;">
       <div class="alert-box">
@@ -86,7 +92,6 @@
 
 
   <script src="../javascript/intrusionAlert.js"></script>  
-  <script src="../javascript/sendEmail.js"></script>
   <script src="../javascript/allowNotifications.js"></script> 
   <script src="../javascript/deviceIsOffline.js"></script>
   <script src="../javascript/batteryNotification.js"></script> 
