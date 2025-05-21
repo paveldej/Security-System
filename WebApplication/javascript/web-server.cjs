@@ -1,3 +1,4 @@
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -17,16 +18,6 @@ app.get('/html/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'html', 'login.html'));
 });
 
-// Handle login POST
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-    isLoggedIn = true; // mark as logged in (only in memory!)
-    return res.status(200).json({ success: true });
-  }
-  return res.status(401).json({ success: false });
-});
-
 // Only allow index.html if logged in
 app.get('/html/index.html', (req, res) => {
   if (isLoggedIn) {
@@ -38,6 +29,28 @@ app.get('/html/index.html', (req, res) => {
 
 // Serve everything else normally (All other files such as CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, '..')));
+
+app.use('/auth-proxy', createProxyMiddleware({
+  target: 'http://localhost:4000',
+  changeOrigin: true,
+  pathRewrite: { '^/auth-proxy': '' }
+}));
+
+// Handle login POST
+app.post('/login', (req, res) => {
+  const res = fetchFn("http://localhost:4000/login", {  // CHANGED: target external auth server
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+  console.log("I am here in the log in");
+  const { email, password } = req.body;
+  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    isLoggedIn = true; // mark as logged in (only in memory!)
+    return res.status(200).json({ success: true });
+  }
+  return res.status(401).json({ success: false });
+});
 
 // Redirect any unknown or unmatched URL to the login page using regular expression (handles 404 fallback)
 app.get(/.*/, (req, res) => {

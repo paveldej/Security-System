@@ -1,18 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const cors = require('cors')
 
 dotenv.config();
 
 const app = express();
 const PORT = 4000;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 // Simple login API that compares credentials to values in .env
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
-
+    console.log("I am here auth");
   if (
     email === process.env.ADMIN_EMAIL &&
     password === process.env.ADMIN_PASSWORD
@@ -29,4 +31,9 @@ app.listen(PORT, () => {
   console.log("Authentication server script is reachable and safe.");
   process.exit(0);
 }
+});
+
+app.use((req, res, next) => {
+  console.log("AUTH SERVER GOT:", req.method, req.url);
+  next();
 });
