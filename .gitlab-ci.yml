@@ -46,7 +46,7 @@ test:
     - echo "Testing in progress..."
     - cd ./WebApplication/javascript
     - npm install
-    - node JsTests.cjs
+    - node jsTests.cjs
     - cd ..
     - cd ..
 

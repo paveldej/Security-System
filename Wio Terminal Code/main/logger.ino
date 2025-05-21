@@ -91,7 +91,7 @@ void Logger::publish(PubSubClient& client) {
           Serial.println("Invalid JSON in log, skipping:");
           Serial.println(line);
         } else {
-          bool success = client.publish("GetLogs", line.c_str());
+          bool success = client.publish("getLogs", line.c_str());
           if (!success) {
             Serial.println("Failed to publish log line.");
           }
