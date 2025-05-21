@@ -14,7 +14,6 @@ app.use(bodyParser.json());
 // Simple login API that compares credentials to values in .env
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
-    console.log("I am here auth");
   if (
     email === process.env.ADMIN_EMAIL &&
     password === process.env.ADMIN_PASSWORD
