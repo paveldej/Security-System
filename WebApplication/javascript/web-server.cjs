@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 let isLoggedIn = false; // sessionless login tracking for simple flow (I tried to do it with session and cookies but it was really complicated, but might do it later)
 
@@ -39,7 +39,7 @@ app.get('/html/index.html', (req, res) => {
 // Serve everything else normally (All other files such as CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, '..')));
 
-// Run the server and listen on port 3000 and also 0.0.0.0 for testing it on mobile phone
+// Run the server and listen on port 3001 and also 0.0.0.0 for testing it on mobile phone
 app.listen(PORT,'0.0.0.0', () => {
   console.log(`Web server running on port ${PORT}`);
   if (process.argv[2] === "check") {
