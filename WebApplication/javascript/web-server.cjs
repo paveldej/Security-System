@@ -1,54 +1,82 @@
 const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const bodyParser = require('body-parser');
 const path = require('path');
 const dotenv = require('dotenv');
+
+// Dynamically load fetch for compatibility with CommonJS
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 dotenv.config();
 
 const app = express();
 const PORT = 3001;
 
-let isLoggedIn = false; // sessionless login tracking for simple flow (I tried to do it with session and cookies but it was really complicated, but might do it later)
+let isLoggedIn = false;
 
 app.use(bodyParser.json());
 
-// Serve login.html freely
+app.use('/img', express.static(path.join(__dirname, '..', 'img')));
+app.use('/javascript', express.static(path.join(__dirname, '..', 'javascript')));
+app.use('/css', express.static(path.join(__dirname, '..', 'css')));
+
+// Serve login page to everyone
 app.get('/html/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'html', 'login.html'));
 });
 
-// Handle login POST
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-    isLoggedIn = true; // mark as logged in (only in memory!)
-    return res.status(200).json({ success: true });
-  }
-  return res.status(401).json({ success: false });
-});
-
-// Only allow index.html if logged in
+// Serve index.html ONLY if logged in
 app.get('/html/index.html', (req, res) => {
   if (isLoggedIn) {
-    return res.sendFile(path.join(__dirname, '..', 'html', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'html', 'index.html'));
   } else {
-    return res.redirect('/html/login.html'); // redirect the user back to login.html
+    res.redirect('/html/login.html');
   }
 });
 
-// Serve everything else normally (All other files such as CSS, JS, images, etc.)
-app.use(express.static(path.join(__dirname, '..')));
+// Proxy to auth server
+app.use('/auth-proxy', createProxyMiddleware({
+  target: 'http://localhost:4000',
+  changeOrigin: true,
+  pathRewrite: { '^/auth-proxy': '' },
+}));
 
-// Redirect any unknown or unmatched URL to the login page using regular expression (handles 404 fallback)
+// Login route
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const authRes = await fetch("http://localhost:4000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await authRes.json();
+
+    if (authRes.ok && data.success) {
+      isLoggedIn = true;
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(401).json({ success: false, message: data.message || "Unauthorized" });
+    }
+  } catch (err) {
+    console.error("Error contacting auth server:", err);
+    return res.status(500).json({ success: false, message: "Auth server unreachable" });
+  }
+});
+
+// Catch-all fallback route
 app.get(/.*/, (req, res) => {
   res.redirect("/html/login.html");
 });
 
-// Run the server and listen on port 3001 and also 0.0.0.0 for testing it on mobile phone
-app.listen(PORT,'0.0.0.0', () => {
+// Start server
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Web server running on port ${PORT}`);
-  if (process.argv[2] === "check") {
+    if (process.argv[2] === "check") {
   console.log("Web server script is reachable and safe.");
   process.exit(0);
 }
+
 });
