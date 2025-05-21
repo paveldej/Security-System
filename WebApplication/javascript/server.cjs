@@ -15,7 +15,7 @@ app.use(express.json());
 let isEmailSent = false;
 
 const subscribers = [
-  "filqwerty987@gmail.com",
+  process.env.EMAIL_NOTIFICATION,
   // Add more subscriber emails here
 ];
 
