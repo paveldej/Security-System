@@ -49,11 +49,13 @@ Lastly, the broker layer handles communication between the other two layers with
 
 ## Setup Manual
 
+Make sure that you have all the [sensors and actuators](#tools--hardware-used) used
+
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
 
-⚠️ Make sure that you have the ["Wio Terminal Chassis Battery"](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/) that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
+⚠️ Make sure that you have the [ that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
 
 You can use a USB-C to charge the battery. To turn the battery on, hold down the black button on the back side of the battery.
 
@@ -143,6 +145,7 @@ Now you can arm and disarm your security system and get notification on the appl
     - [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
     - [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
     - [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
+    - [Loudness Sensor](https://wiki.seeedstudio.com/Grove-Loudness_Sensor/)
     - [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
 - Software Tools
     - [Node.js](https://nodejs.org/en/download)
