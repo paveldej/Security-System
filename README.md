@@ -90,11 +90,9 @@ Furthermore you have to install this the following [zip file](https://github.com
 
 #### Uploading the source code 
 
-// REMOVE:
-2. Once you have all the dependencies listed, you have to compile the code
-<pre><code>arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal</code></pre>
+2. Download the following [bin file]()
 
-3. Upload the compiled bin file to the terminal using the following command:
+3. Upload the bin file you've downloaded to the terminal using the following command:
 <pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
 
 
