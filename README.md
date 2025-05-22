@@ -7,7 +7,7 @@
 - [System description](#system-description)
 - [Purpose and benefits](#purpose-and-benefits-of-the-system)
 - [System Architecture](#system-architecture)
-- [Setup Manual](#setup-manual-️)  
+- [Setup Manual](#setup-manual)  
     - [Connecting to a power source](#connecting-to-a-power-source)
     - [Connecting the sensors](#connecting-the-sensors)
     - [How to deploy](#how-to-deploy)
@@ -35,7 +35,7 @@ For convenience, the Seeed Wio Terminal has its own User Interface, that allows 
 // TODO: you can also see information about the system there 
 
 
-## System Architecture 📐
+## System Architecture
 Pavel security system is composed of 3 layers; the Web Application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
 
 The Web Application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the Authentication Server and static file server.
@@ -48,7 +48,7 @@ Lastly, the broker layer handles communication between the other two layers with
 ![Architecture Diagram](docs/architecture_diagram.svg)
 
 
-## Setup Manual 🛠️
+## Setup Manual
 
 ### Connecting to a power source
 
@@ -141,6 +141,6 @@ Now you can arm and disarm your security system and get notification on the appl
     - [Bootstrap.js](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
     - [Arduino IDE](https://www.arduino.cc/en/software/)
     - [Draw.io](https://en.wikipedia.org/wiki/Diagrams.net)
-## License 📜
+## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
