@@ -13,6 +13,7 @@
         - [Uploading the source code](#uploading-the-source-code)
 - [Contributions](#contributions)
 - [Tools & Hardware used](#tools--hardware-used)
+- [For developers](#development-guidelines)
 - [License](#lincense)
 
 ## System Description
@@ -149,6 +150,10 @@ Now you can arm and disarm your security system and get notification on the appl
     - [Bootstrap.js](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
     - [Arduino IDE](https://www.arduino.cc/en/software/)
     - [Draw.io](https://en.wikipedia.org/wiki/Diagrams.net)
+
+## Development Guidelines
+
+If you intend on contributing to our project, read our [Development Guideline](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/wikis/Development-Guidelines).
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
