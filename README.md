@@ -110,15 +110,16 @@ Furthermore you have to install this the following [zip file](https://github.com
 ⚠️ Note: Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
 
 
-6. Create an file named ".env" in the javascript??? folder using the following format
+6. Create an file named ".env" in the javascript folder using the *following format*
 
 <pre><code>
 EMAIL_USER=pavelssystem@gmail.com
-EMAIL_PASS=password123
-ADMIN_EMAIL=johndoe@example.com
-ADMIN_PASSWORD=johndoe123
-EMAIL_NOTIFICATION=dejkoskip@gmail.com
+EMAIL_PASS=ucxt uvkl rkmr gsva
+ADMIN_EMAIL=personalemail@example.com
+ADMIN_PASSWORD=password_goes_here
+EMAIL_NOTIFICATION=personalemail@example.com
 </code></pre>
+⚠️ Note: Do not change the EMAIL_USER and EMAIL_PASS, as it is the email address that you get the notifications from 
 
 7. Open the browser of your choice and type [http://localhost:3001/html/login.html](http://localhost:3001/html/login.html).
 
