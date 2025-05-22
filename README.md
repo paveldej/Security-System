@@ -2,8 +2,6 @@
 
 ## Table of Contents
 
-//OBS: links don't work if you have an emoji in them
-
 - [System description](#system-description)
 - [Purpose and benefits](#purpose-and-benefits-of-the-system)
 - [System Architecture](#system-architecture)
@@ -111,9 +109,19 @@ Furthermore you have to install this the following [zip file](https://github.com
 ⚠️ Note: Once you've run the command, you must leave all of these terminal open to in order for the application to work properly.
 
 
-6. Open the browser of your choice and type [http://localhost:3001/html/login.html](http://localhost:3001/html/login.html).
+6. Create an file named ".env" in the javascript??? folder using the following format
 
-7. Add a .env file????????? and log in????
+<pre><code>
+EMAIL_USER=pavelssystem@gmail.com
+EMAIL_PASS=password123
+ADMIN_EMAIL=johndoe@example.com
+ADMIN_PASSWORD=johndoe123
+EMAIL_NOTIFICATION=dejkoskip@gmail.com
+</code></pre>
+
+7. Open the browser of your choice and type [http://localhost:3001/html/login.html](http://localhost:3001/html/login.html).
+
+8. Log in
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
