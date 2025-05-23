@@ -93,7 +93,7 @@ Furthermore, you have to install this the following [zip file](https://github.co
 
 #### Uploading the source code 
 
-2. Download the following [bin file](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/jobs/artifacts/37-finalize-readme-for-release/raw/WioTerminal/builds/main.ino.wio_terminal.bin?job=build)
+2. Download the following [bin file](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/jobs/artifacts/37-finalize-readme-for-release/raw/WioTerminal/builds/main.ino.bin?job=build)
 
 3. Upload the bin file you've downloaded to the terminal using the following command:
 <pre><code>arduino-cli upload -t < path to main.ino.bin > -b Seeeduino:samd:seeed_wio_terminal -p < port, usually COM3 > </code></pre>
