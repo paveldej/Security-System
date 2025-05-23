@@ -236,12 +236,6 @@ void loop()
     reconnect();
   }
   client.loop();
-
-
-  if(armed == false){
-    return;
-    
-  }
   
   if (flag == false){
       setupTime();  
@@ -258,15 +252,19 @@ void loop()
     updateBattery();
     updateBatteryPeriod = millis();
   }
+
+  if(armed == false){
+    return;
+  }
+
   // Serial.println(alarmTrigger.getNormalizedVolume());
   if(alarmTrigger.getNormalizedDistance() + alarmTrigger.getNormalizedVolume() >= TRIGGER_THRESHOLD) {
     client.publish(getTrigger, "trigger");
     Serial.println("Intruder alert published to MQTT!");
     alarmTrigger.triggerAlarm(TRIGGER_DURATION);
     logger.log("Trigger","Intruder Detected");
-     Serial.println("triggered");
-  } else {
-   
+    Serial.println("triggered");
   }
+  
   delay(100);
 }

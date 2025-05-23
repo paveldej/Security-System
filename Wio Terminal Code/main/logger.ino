@@ -60,7 +60,7 @@ String Logger::formatDate(time_t t) {
   return String(dateStr);
 }
 
-// Publish latest log via MQTT
+// // Publish latest log via MQTT
 void Logger::publish(PubSubClient& client) {
   if (!client.connected()) {
     Serial.println("MQTT client not connected.");
@@ -73,41 +73,57 @@ void Logger::publish(PubSubClient& client) {
     return;
   }
 
-  long pos = logFile.size() - 1;
-  String line = "";
+  long fileSize = logFile.size();
+  long pos = fileSize - 1;
+  int lineCount = 0;
+  String currentLine = "";
+  String lastLines[15];
+  int index = 14;
 
-  while (pos >= 0) {
+  while (pos >= 0 && lineCount < 15) {
     logFile.seek(pos);
     char c = logFile.read();
-
-    if (c == '\n' || pos == 0) {
-      if (pos == 0) line = c + line; // Include first character
-
-      line.trim();
-      if (line.length() > 0) {
-        StaticJsonDocument<256> doc;
-        DeserializationError error = deserializeJson(doc, line);
-        if (error) {
-          Serial.println("Invalid JSON in log, skipping:");
-          Serial.println(line);
-        } else {
-          bool success = client.publish("getLogs", line.c_str());
-          if (!success) {
-            Serial.println("Failed to publish log line.");
-          }
-          delay(10);
-        }
+    if (c == '\n') {
+      if (currentLine.length() > 0) {
+        lastLines[index] = currentLine;
+        index--;
+        lineCount++;
+        currentLine = "";
       }
-
-      line = "";  // Reset for the next line
     } else {
-      line = c + line;  // Prepend character
+      currentLine = c + currentLine;
     }
-
     pos--;
   }
 
+  if (currentLine.length() > 0 && lineCount < 15) {
+    lastLines[index] = currentLine;
+    index--;
+    lineCount++;
+  }
+
+  for (int i = index + 1; i < 15; i++) {
+    String line = lastLines[i];
+    line.trim();
+
+    if (line.length() > 0) {
+      StaticJsonDocument<256> doc;
+      DeserializationError error = deserializeJson(doc, line);
+      if (error) {
+        Serial.println("Invalid JSON, skipping:");
+        Serial.println(line);
+        continue;
+      }
+
+      bool success = client.publish("getLogs", line.c_str());
+      if (!success) {
+        Serial.println("Failed to publish log line.");
+      }
+      delay(10);
+    }
+  }
+
   logFile.close();
-  Serial.println("All logs published in reverse.");
+  Serial.println("Last 15 logs published.");
 }
 

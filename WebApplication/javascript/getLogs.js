@@ -40,7 +40,7 @@ function getLogs(logs) {
       const modal = new bootstrap.Modal(document.getElementById('logsModal'));
       const logsContent = document.getElementById('logsContent');
 
-      let formattedLogs = logs.slice().map(log => {
+      let formattedLogs = logs.slice().reverse().map(log => {
         try {
           const parsed = JSON.parse(log);
           const timestamp = parsed.timestamp || "No timestamp";
@@ -81,16 +81,30 @@ function sendlogRequest() {
 if (typeof window !== 'undefined') {
   document.addEventListener("DOMContentLoaded", function () {
     const getLogsButton = document.getElementById("getLogs");
+    const logsSpinner = document.getElementById("logsSpinner");
+    let isCooldown = false;
 
-    // Ensure logs are cleared each time the button is clicked
     getLogsButton.addEventListener('click', function () {
+      if (isCooldown) {
+        return;
+      }
+
+      isCooldown = true;
+      getLogsButton.disabled = true;
+      logsSpinner.classList.remove("d-none");
+
       logs = [];
       sendlogRequest();
 
       setTimeout(() => {
-        console.log("Clicked. Logs value:", logs);
         getLogs(logs);
-      }, 1000); 
+
+        setTimeout(() => {
+          isCooldown = false;
+          getLogsButton.disabled = false;
+          logsSpinner.classList.add("d-none");
+        }, 4000);
+      }, 1000);
     });
 
     client.on('connect', () => {
@@ -104,11 +118,12 @@ if (typeof window !== 'undefined') {
     client.on('message', function (topic, message) {
       if (topic === 'getLogs') {
         const logStr = message.toString();
-        console.log("Logs received: ", logStr);
         logs.push(logStr);
       }
     });
   });
 }
 
-module.exports = { getLogs };
+try {
+  module.exports = { getLogs };
+} catch (error) {}

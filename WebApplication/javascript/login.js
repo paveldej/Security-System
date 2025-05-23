@@ -1,5 +1,5 @@
 async function sendLoginRequest({ email, password }, fetchFn = fetch) {
-  const res = await fetchFn("/login", {
+  const res = await fetchFn("http://localhost:3001/login", {  // CHANGED: target external auth server
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -20,7 +20,9 @@ async function login() {
   const result = await sendLoginRequest({ email, password });
 
   if (result.success) {
+
     window.location.href = "/html/index.html";
+    console.log("successfully loggedin");
   } else {
     loginError.innerText = result.message || "The Email Or Password Provided is Incorrect!";
     warningBox.style.display = "block";
