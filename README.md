@@ -69,7 +69,7 @@ Once you've connected the battery/chassis and its charged up, you have to plug i
 
 ### How to deploy
 -----
-Now that you've connected the sensors and provided power, you can now turn the device on. Put it on middle position.
+Now that you've connected the sensors and provided power, you can now turn the device on. Put the three-way power switch on middle position.
 
 #### Installing dependencies 
 ⚠️
