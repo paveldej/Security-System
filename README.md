@@ -30,9 +30,7 @@ Pavel Security System is a simple and reliable IoT solution to increase the secu
 
 Our System provides an authentication mechanism, which lets users connect to their security system securely from anywhere, after inputting their credentials, that is provided to them out of the box.
 
-For convenience, the Seeed Wio Terminal has its own User Interface, that allows users to interact with the system and perform all necessary actions, such as connecting to a Wifi network and allows them to arm or disarm the system without having to use the Web Application. 
-
-// TODO: you can also see information about the system there 
+For convenience, the Seeed Wio Terminal has its own User Interface, that allows users to interact with the system and perform all necessary actions, such as connecting to a Wifi network and allows them to arm or disarm the system without having to use the Web Application. It also displays relevant information about the system, such as the battery percentage, arming state and whether the device is connected to a Wifi network (online/offline).
 
 ## Demo
 [![Watch our demo](https://img.youtube.com/vi/8d7tswTK1HU/0.jpg)](https://www.youtube.com/watch?v=8d7tswTK1HU)
@@ -64,7 +62,7 @@ You can use a USB-C to charge the battery. To turn the battery on, hold down the
 
 ### Connecting the sensors
 
-Once you've connected the battery/chassis you have to plug in the sensors into the ports on the chassis in the following way:
+Once you've connected the battery/chassis and its charged up, you have to plug in the sensors into the ports on the chassis in the following way:
 
 ![ports](docs/ports.jpg)
 
@@ -90,15 +88,15 @@ arduino-cli lib install "Time@1.6.1"
 
 </code></pre>
 
-Furthermore you have to install this the following [zip file](https://github.com/Seeed-Studio/Grove_Chainable_RGB_LED/archive/refs/heads/master.zip) and unzip it into the Arduino/libaries folder
+Furthermore, you have to install this the following [zip file](https://github.com/Seeed-Studio/Grove_Chainable_RGB_LED/archive/refs/heads/master.zip) and unzip it into the Arduino/libaries folder
 
 
 #### Uploading the source code 
 
-2. Download the following [bin file]()
+2. Download the following [bin file](https://git.chalmers.se/courses/dit113/2025/group-3/security-system/-/jobs/artifacts/main/raw/WioTerminal/builds/main.ino.wio_terminal.bin?job=build)
 
 3. Upload the bin file you've downloaded to the terminal using the following command:
-<pre><code>arduino-cli upload -t < path to bin > -b Seeeduino:samd:seeed_wio_terminal -p < port > </code></pre>
+<pre><code>arduino-cli upload -t < path to main.ino.bin > -b Seeeduino:samd:seeed_wio_terminal -p < port, usually COM3 > </code></pre>
 
 
 4. Download [Node.js](https://nodejs.org/en/download) and run the following command through the terminal after navigating inside the Web Application/javascript folder:
@@ -126,7 +124,7 @@ EMAIL_NOTIFICATION=personalemail@example.com
 
 7. Open the browser of your choice and type [http://localhost:3001/html/login.html](http://localhost:3001/html/login.html).
 
-8. Log in
+8. Log in with the credentials you've specified in the .env file
 
 Now you can arm and disarm your security system and get notification on the application and by email about potential intruders and information about the state of your battery.
 
