@@ -35,13 +35,15 @@ For convenience, the Seeed Wio Terminal has its own User Interface, that allows 
 
 
 ## System Architecture
-Pavel security system is composed of 3 layers; the Web Application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
+Pavel security system is composed of 4 layers; The physical layer, the web application layers, the email layer and the authentication layer. Each layer has its own software components and serves a unique purpose.
 
-The Web Application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the Authentication Server and static file server.
+The Web Application  layer provides the user with a visual interface, and lets the user interact with the system without the need of being physically present.
 
-The device software & email server layer handles reading and processing input data, sending email notifications and displaying system info on the Wio terminal.
+The authentication layer ensures only authorized users have access to certain features, in this case our web application. This is done via the comparison of environment file variables and inputted credentials, as well as guarding so users cant circumvent authorization by changing the link, for example.
 
-Lastly, the broker layer handles communication between the other two layers with a pub/sub model.
+The physical layer handles Display on the WIO terminal, as well as the reading and processing of sensor data.
+
+Lastly, the email layer handles email notifications, through the use of a cjs server.
 
 *Diagram of the Architecture:*
 ![Architecture Diagram](docs/architecture_diagram.svg)
