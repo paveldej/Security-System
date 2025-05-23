@@ -34,6 +34,7 @@ build:
     - arduino-cli core install Seeeduino:samd
     - mkdir builds
     - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal --output-dir ./builds || { echo "Compiling the arduino code has failed." >&2; exit 1; }
+    - ls -l ./builds
     - cd -
   artifacts:
     paths:
