@@ -4,6 +4,7 @@
 
 - [System description](#system-description)
 - [Purpose and benefits](#purpose-and-benefits-of-the-system)
+- [Demo](#demo)
 - [System Architecture](#system-architecture)
 - [Setup Manual](#setup-manual)  
     - [Connecting to a power source](#connecting-to-a-power-source)
@@ -33,6 +34,8 @@ For convenience, the Seeed Wio Terminal has its own User Interface, that allows 
 
 // TODO: you can also see information about the system there 
 
+## Demo
+[![Watch our demo](https://img.youtube.com/vi/8d7tswTK1HU/0.jpg)](https://www.youtube.com/watch?v=8d7tswTK1HU)
 
 ## System Architecture
 Pavel security system is composed of 4 layers; The physical layer, the web application layers, the email layer and the authentication layer. Each layer has its own software components and serves a unique purpose.
@@ -51,13 +54,11 @@ Lastly, the email layer handles email notifications, through the use of a cjs se
 
 ## Setup Manual
 
-Make sure that you have all the [sensors and actuators](#tools--hardware-used) used
+⚠️Make sure that you have all the [sensors and actuators](#tools--hardware-used) used
 
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
-
-⚠️ Make sure that you have the [ that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
 
 You can use a USB-C to charge the battery. To turn the battery on, hold down the black button on the back side of the battery.
 
