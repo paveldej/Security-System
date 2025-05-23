@@ -35,13 +35,15 @@ For convenience, the Seeed Wio Terminal has its own User Interface, that allows 
 
 
 ## System Architecture
-Pavel security system is composed of 3 layers; the Web Application & authentication layer, the broker layer and the device software & email server layer. Each layer has its own software components and serves a unique purpose.
+Pavel security system is composed of 4 layers; The physical layer, the web application layers, the email layer and the authentication layer. Each layer has its own software components and serves a unique purpose.
 
-The Web Application & authentication layer provides the user with a visual interface after and only after they have been authenticated by the Authentication Server and static file server.
+The Web Application  layer provides the user with a visual interface, and lets the user interact with the system without the need of being physically present.
 
-The device software & email server layer handles reading and processing input data, sending email notifications and displaying system info on the Wio terminal.
+The authentication layer ensures only authorized users have access to certain features, in this case our web application. This is done via the comparison of environment file variables and inputted credentials, as well as guarding so users cant circumvent authorization by changing the link, for example.
 
-Lastly, the broker layer handles communication between the other two layers with a pub/sub model.
+The physical layer handles Display on the WIO terminal, as well as the reading and processing of sensor data.
+
+Lastly, the email layer handles email notifications, through the use of a cjs server.
 
 *Diagram of the Architecture:*
 ![Architecture Diagram](docs/architecture_diagram.svg)
@@ -49,11 +51,13 @@ Lastly, the broker layer handles communication between the other two layers with
 
 ## Setup Manual
 
+Make sure that you have all the [sensors and actuators](#tools--hardware-used) used
+
 ### Connecting to a power source
 
 In order to use the terminal you have to connect it to some power source.
 
-⚠️ Make sure that you have the ["Wio Terminal Chassis Battery"](https://wiki.seeedstudio.com/Wio-Terminal-Chassis-Battery_650mAh/) that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
+⚠️ Make sure that you have the [ that you can easily connect using the pins on the front of the battery/chassis to the back of the terminal.
 
 You can use a USB-C to charge the battery. To turn the battery on, hold down the black button on the back side of the battery.
 
@@ -143,6 +147,7 @@ Now you can arm and disarm your security system and get notification on the appl
     - [Ultrasonic Ranger](https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/)
     - [Chainable RGB LED](https://wiki.seeedstudio.com/Grove-Chainable_RGB_LED/)
     - [Buzzer](https://wiki.seeedstudio.com/Grove-Buzzer/)
+    - [Loudness Sensor](https://wiki.seeedstudio.com/Grove-Loudness_Sensor/)
     - [SD card (min. 2GB)](https://en.wikipedia.org/wiki/SD_card)
 - Software Tools
     - [Node.js](https://nodejs.org/en/download)
