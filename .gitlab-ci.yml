@@ -28,12 +28,17 @@ build:
     - curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
     - export PATH=$PATH:/root/bin
     - pwd
-    - cd Wio\ Terminal\ Code/main
+    - cd "Wio Terminal Code/main"
     - echo "Building project..."
     - arduino-cli core update-index
     - arduino-cli core install Seeeduino:samd
-    - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal || { echo "Compiling the arduino code has failed." >&2; exit 1; }
+    - mkdir builds
+    - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal --output-dir ./builds || { echo "Compiling the arduino code has failed." >&2; exit 1; }
+    - ls -l ./builds
     - cd -
+  artifacts:
+    paths:
+      - "Wio Terminal Code/main/builds"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main"'
